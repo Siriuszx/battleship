@@ -5,8 +5,8 @@ class Ship {
 
   #shipPieces = [];
 
-  constructor(length, coordStart, defaultDirection) {
-    this.#buildShip(coordStart, defaultDirection, length);
+  constructor(coordStart, horizontal, length) {
+    this.#buildShip(coordStart, horizontal, length);
   }
 
   tryHit(hitCoord) {
@@ -22,22 +22,20 @@ class Ship {
     return shipPiece.hit();
   }
 
-  isSunk() {
-    const isNotSunk = this.#shipPieces.some(shipPiece =>
-      shipPiece.hitStatus === false
+  get isSunk() {
+    return this.#shipPieces.every(shipPiece =>
+      shipPiece.hitStatus === true
     );
-
-    return isNotSunk;
   }
 
   #buildShip(coordStart, horizontal, length) {
-    for (let i = 1; i <= length; i += 1) {
+    for (let i = 0; i < length; i += 1) {
       let shipPieceCoord = null;
 
       if (horizontal) {
-        shipPieceCoord = new ShipPiece(coordStart.getX + i, coordStart.getY);
+        shipPieceCoord = new ShipPiece(coordStart.coordX + i, coordStart.coordY);
       } else {
-        shipPieceCoord = new ShipPiece(coordStart.getX, coordStart.getY + i);
+        shipPieceCoord = new ShipPiece(coordStart.coordX, coordStart.coordY + i);
       }
 
       this.#shipPieces.push(shipPieceCoord);
@@ -45,8 +43,8 @@ class Ship {
   }
 
   get length() { return this.#shipPieces.length; }
-  
-  get timesHit() { return this.#timesHit;  }
+
+  get timesHit() { return this.#timesHit; }
 }
 
 export default Ship;
