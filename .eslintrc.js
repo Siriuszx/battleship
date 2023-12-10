@@ -7,9 +7,13 @@ module.exports = {
   overrides: [
     {
       env: {
-        node: true,
+        jest: true
       },
-      files: ['.eslintrc.{js,cjs}'],
+      files: [
+        '.eslintrc.{js,cjs}',
+        '**/*.spec.js',
+        '**/*.spec.jsx'
+      ],
       parserOptions: {
         sourceType: 'script',
       },
@@ -19,5 +23,12 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  rules: {},
+  rules: {
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error"
+  },
+  plugins: ["jest"]
 };
