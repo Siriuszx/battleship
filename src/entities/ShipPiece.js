@@ -1,13 +1,12 @@
-class ShipPiece {
-    #coordX = 0;
+import Coordinate from "./Coordinate";
 
-    #coordY = 0;
+class ShipPiece {
+    #coord = null;
 
     #hitStatus = false;
 
     constructor(coordX, coordY) {
-        this.#coordX = coordX;
-        this.#coordY = coordY;
+        this.#coord = new Coordinate(coordX, coordY);
     }
 
     hit() {
@@ -15,9 +14,9 @@ class ShipPiece {
         return this.#hitStatus;
     }
 
-    get coordX() { return this.#coordX; }
+    get coordX() { return this.#coord.coordX }
 
-    get coordY() { return this.#coordY; }
+    get coordY() { return this.#coord.coordY; }
 
     get hitStatus() { return this.#hitStatus; }
 }
