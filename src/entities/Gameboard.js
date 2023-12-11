@@ -6,25 +6,25 @@ class Gameboard {
 
     #height = 10;
 
-    board = [];
+    #board = [];
 
     constructor() {
-        this.#init();
+        this.#initBoard();
     }
 
-    placeShip(coordStart, horizontal, length) {
-        if (!this.#canPlace(coordStart, horizontal, length)) return false;
+    placeShip(coordStart, isHorizontal, length) {
+        if (!this.#canPlace(coordStart, isHorizontal, length)) return false;
 
-        const newShip = new Ship(coordStart, horizontal, length);
+        const newShip = new Ship(coordStart, isHorizontal, length);
 
-        if (horizontal === true) {
+        if (isHorizontal === true) {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
+                const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
                 boardCell.occupy(newShip);
             }
         } else {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.board[coordStart.coordX - 1][(coordStart.coordY - 1) + i];
+                const boardCell = this.#board[coordStart.coordX - 1][(coordStart.coordY - 1) + i];
                 boardCell.occupy(newShip);
             }
         }
@@ -33,48 +33,62 @@ class Gameboard {
     }
 
     receiveAttack(coord) {
-        return this.board[coord.coordX - 1][coord.coordY - 1].hit();
+        return this.#board[coord.coordX - 1][coord.coordY - 1].hit();
     }
 
-    #canPlace(coordStart, horizontal, length) {
-        if (horizontal === true) {
-            if (coordStart.coordX + length > this.#width)
-                return false;
-        }
+    getBoardState() {
+        const boardStateCopy = this.#board.slice();
 
-        if (horizontal === false) {
-            if (coordStart.coordY + length > this.#height)
-                return false;
-        }
-
-        if (horizontal === true) {
-            for (let i = 0; i < length; i += 1) {
-                if (this.board[(coordStart.coordX - 1) + i][coordStart.coordY - 1].occupied === true) {
-                    return false;
-                }
-            }
-        }
-
-        if (horizontal === false) {
-            for (let i = 0; i < length; i += 1) {
-                if (this.board[coordStart.coordX - 1][(coordStart.coordY - 1) + i].occupied === true) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return boardStateCopy;
     }
 
-    #init() {
-        if (this.board.length !== 0) return;
+    #canPlace(coordStart, isHorizontal, length) {
+        switch (isHorizontal) {
+            case true: {
+                if (coordStart.coordX + length > this.#width) {
+                    return false;
+                }
+
+                for (let i = 0; i < length; i += 1) {
+                    const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
+
+                    if (boardCell.isOccupied === true) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            case false: {
+                if (coordStart.coordY + length > this.#height) {
+                    return false;
+                }
+
+                for (let i = 0; i < length; i += 1) {
+                    const boardCell = this.#board[coordStart.coordX - 1][(coordStart.coordY - 1) + i];
+
+                    if (boardCell.isOccupied === true) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            default:
+                return false;
+        }
+    }
+
+    #initBoard() {
+        if (this.#board.length !== 0) return;
 
         for (let i = 0; i < this.#width; i += 1) {
-            this.board.push([]);
+            this.#board.push([]);
+
             for (let j = 0; j < this.#height; j += 1) {
                 const emptyCell = new BoardCell(i + 1, j + 1);
 
-                this.board[i].push(emptyCell);
+                this.#board[i].push(emptyCell);
             }
         }
     }

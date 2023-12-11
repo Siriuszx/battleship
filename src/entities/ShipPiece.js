@@ -19,7 +19,7 @@ class ShipPiece {
 
     get coordY() { return this.#coordY; }
 
-    get hitStatus() { return this.#hitStatus;} 
+    get hitStatus() { return this.#hitStatus; }
 }
 
 export default ShipPiece;

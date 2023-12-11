@@ -15,22 +15,16 @@ test('valid ship placement', () => {
     expect(mockBoard.placeShip(new Coordinate(4,3), true, 5)).toBeTruthy();
 });
 
-test('hitting valid targets', () => {
+test('hitting valid cells', () => {
     const mockBoard = new Gameboard();
-
-    mockBoard.placeShip(new Coordinate(1, 1), true, 5);
-    mockBoard.placeShip(new Coordinate(1,2), false, 5);
-    mockBoard.placeShip(new Coordinate(4,3), true, 5);
 
     expect(mockBoard.receiveAttack(new Coordinate(1,1))).toBeTruthy();
     expect(mockBoard.receiveAttack(new Coordinate(3,1))).toBeTruthy();
     expect(mockBoard.receiveAttack(new Coordinate(5,1))).toBeTruthy();
-    expect(mockBoard.receiveAttack(new Coordinate(1,6))).toBeTruthy();
-
+    expect(mockBoard.receiveAttack(new Coordinate(10,10))).toBeTruthy();
 
     // test if attacked cells cannot be attacked again
     expect(mockBoard.receiveAttack(new Coordinate(5,1))).toBeFalsy();
-
-    expect(mockBoard.receiveAttack(new Coordinate(6,1))).toBeFalsy();
-    expect(mockBoard.receiveAttack(new Coordinate(1,7))).toBeFalsy();
+    expect(mockBoard.receiveAttack(new Coordinate(3,1))).toBeFalsy();
+    expect(mockBoard.receiveAttack(new Coordinate(10,10))).toBeFalsy();
 });

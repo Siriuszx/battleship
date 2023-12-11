@@ -1,39 +1,58 @@
 import Coordinate from "./Coordinate";
+import hitStatus from "./HitStatus";
 
 class BoardCell {
-    #coordX = 1;
-
-    #coordY = 1;
-
-    #occupied = false;
+    #coord = null;
 
     #ship = null;
+
+    #isOccupied = false;
 
     #hasBeenHit = false;
 
     constructor(coordX, coordY) {
-        this.#coordX = coordX;
-        this.#coordY = coordY;
+        this.#coord = new Coordinate(coordX, coordY);
     }
 
     occupy(ship) {
-        this.#occupied = true;
+        if (this.#ship) return false;
+
+        this.#isOccupied = true;
         this.#ship = ship;
+
+        return true;
     }
 
     hit() {
+        if (this.#hasBeenHit === true) return false;
+
         this.#hasBeenHit = true;
 
-        if(this.#ship) {
-            return this.#ship.tryHit(new Coordinate(this.#coordX, this.#coordY));
+        if (this.#ship) {
+            this.#ship.tryHit(this.#coord);
         }
 
-        return false;
+        return true;
     }
 
-    get occupied() { return this.#occupied; }
+    get isOccupied() { return this.#isOccupied; }
 
-    get hasBeenHit() { return this.#hasBeenHit; }
+    get hitStatus() {
+        switch (this.#hasBeenHit) {
+            case false: {
+                return hitStatus().NOT_HIT;
+            }
+            case true: {
+                if (this.#ship) {
+                    return hitStatus().HIT_SHIP;
+                }
+
+                return hitStatus().HIT_CELL;
+            }
+            default:
+                return null;
+        }
+    }
 }
 
 export default BoardCell;
