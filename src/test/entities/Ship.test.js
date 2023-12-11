@@ -23,18 +23,18 @@ test('hitting valid parts of the ship', () => {
 test('ship gets sunk if all of its parts have been hit', () => {
     const mockShip = new Ship(new Coordinate(0, 0), true, 5);
 
-    expect(mockShip.isSunk).toBeFalsy();
+    expect(mockShip.isSunk()).toBeFalsy();
     
     mockShip.tryHit(new Coordinate(0, 0))
     mockShip.tryHit(new Coordinate(1, 0));
     mockShip.tryHit(new Coordinate(2, 0));
 
-    expect(mockShip.isSunk).toBeFalsy();
+    expect(mockShip.isSunk()).toBeFalsy();
     
     mockShip.tryHit(new Coordinate(3, 0));
     mockShip.tryHit(new Coordinate(4, 0))
     
-    expect(mockShip.isSunk).toBeTruthy();
+    expect(mockShip.isSunk()).toBeTruthy();
 });
 
 test('correct ship length', () => {

@@ -22,7 +22,7 @@ class Ship {
     return shipPiece.hit();
   }
 
-  get isSunk() {
+  isSunk() {
     return this.#shipPieces.every(shipPiece =>
       shipPiece.hitStatus === true
     );

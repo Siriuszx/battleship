@@ -8,6 +8,8 @@ class Gameboard {
 
     #board = [];
 
+    #shipList = [];
+
     constructor() {
         this.#initBoard();
     }
@@ -16,6 +18,8 @@ class Gameboard {
         if (!this.#canPlace(coordStart, isHorizontal, length)) return false;
 
         const newShip = new Ship(coordStart, isHorizontal, length);
+
+        this.#shipList.push(newShip);
 
         if (isHorizontal === true) {
             for (let i = 0; i < length; i += 1) {
@@ -36,7 +40,11 @@ class Gameboard {
         return this.#board[coord.coordX - 1][coord.coordY - 1].hit();
     }
 
-    getBoardState() {
+    allShipsSunk() {
+        return this.#shipList.every(ship => ship.isSunk());
+    }
+
+    getBoardData() {
         const boardStateCopy = this.#board.slice();
 
         return boardStateCopy;

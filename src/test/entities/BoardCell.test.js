@@ -1,6 +1,5 @@
 import { expect, test } from "@jest/globals";
 import BoardCell from "../../entities/BoardCell";
-import hitStatus from "../../entities/HitStatus";
 import Ship from "../../entities/Ship";
 import Coordinate from "../../entities/Coordinate";
 
