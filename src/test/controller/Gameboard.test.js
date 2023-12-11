@@ -1,9 +1,9 @@
 import { test, expect } from '@jest/globals';
-import Gameboard from '../../entities/Gameboard';
+import GameboardController from '../../controller/GameboardController';
 import Coordinate from '../../entities/Coordinate';
 
 test('valid ship placement', () => {
-    const mockBoard = new Gameboard();
+    const mockBoard = new GameboardController();
 
     expect(mockBoard.placeShip(new Coordinate(1, 1), true, 5)).toBeTruthy();
 
@@ -16,7 +16,7 @@ test('valid ship placement', () => {
 });
 
 test('hitting valid cells', () => {
-    const mockBoard = new Gameboard();
+    const mockBoard = new GameboardController();
 
     expect(mockBoard.receiveAttack(new Coordinate(1, 1))).toBeTruthy();
     expect(mockBoard.receiveAttack(new Coordinate(3, 1))).toBeTruthy();
@@ -30,7 +30,7 @@ test('hitting valid cells', () => {
 });
 
 test('all ships sunk status', () => {
-    const mockBoard = new Gameboard();
+    const mockBoard = new GameboardController();
 
     mockBoard.placeShip(new Coordinate(1, 1), true, 1);
     mockBoard.placeShip(new Coordinate(1, 2), true, 1);

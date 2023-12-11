@@ -1,7 +1,7 @@
-import BoardCell from "./BoardCell";
-import Ship from "./Ship";
+import BoardCell from "../entities/BoardCell";
+import Ship from "../entities/Ship";
 
-class Gameboard {
+class GameboardController {
     #width = 10;
 
     #height = 10;
@@ -102,4 +102,4 @@ class Gameboard {
     }
 }
 
-export default Gameboard;
+export default GameboardController;
