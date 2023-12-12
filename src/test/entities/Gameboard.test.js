@@ -13,10 +13,10 @@ test('valid ship placement', () => {
     const ship5 = new Ship(new Coordinate(4, 3), true, 5);
 
     expect(mockBoard.placeShip(ship1, true, 5)).toBeTruthy();
+    expect(mockBoard.placeShip(ship3, true, 5)).toBeTruthy();
 
     expect(mockBoard.placeShip(ship1, true, 5)).toBeFalsy();
     expect(mockBoard.placeShip(ship2, true, 5)).toBeFalsy();
-    expect(mockBoard.placeShip(ship3, true, 5)).toBeFalsy();
 
     expect(mockBoard.placeShip(ship4, false, 5)).toBeTruthy();
     expect(mockBoard.placeShip(ship5, true, 5)).toBeTruthy();

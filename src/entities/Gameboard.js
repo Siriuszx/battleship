@@ -21,12 +21,12 @@ class Gameboard {
 
         if (isHorizontal === true) {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.#board[(ship.getCoordStart().coordX - 1) + i][ship.getCoordStart().coordY - 1];
+                const boardCell = this.#board[ship.getCoordStart().coordY - 1][(ship.getCoordStart().coordX - 1) + i];
                 boardCell.occupy(ship);
             }
         } else {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.#board[ship.getCoordStart().coordX - 1][(ship.getCoordStart().coordY - 1) + i];
+                const boardCell = this.#board[(ship.getCoordStart().coordY - 1) + i][ship.getCoordStart().coordX - 1];
                 boardCell.occupy(ship);
             }
         }
@@ -35,7 +35,7 @@ class Gameboard {
     }
 
     receiveAttack(coord) {
-        return this.#board[coord.coordX - 1][coord.coordY - 1].hit();
+        return this.#board[coord.coordY - 1][coord.coordX - 1].hit();
     }
 
     allShipsSunk() {
@@ -62,7 +62,7 @@ class Gameboard {
                 }
 
                 for (let i = 0; i < length; i += 1) {
-                    const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
+                    const boardCell = this.#board[coordStart.coordY - 1][(coordStart.coordX - 1) + i];
 
                     if (boardCell.isOccupied === true) {
                         return false;
@@ -78,7 +78,7 @@ class Gameboard {
                 }
 
                 for (let i = 0; i < length; i += 1) {
-                    const boardCell = this.#board[coordStart.coordX - 1][(coordStart.coordY - 1) + i];
+                    const boardCell = this.#board[(coordStart.coordY - 1) + i][coordStart.coordX - 1];
 
                     if (boardCell.isOccupied === true) {
                         return false;
