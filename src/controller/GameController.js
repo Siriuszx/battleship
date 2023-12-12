@@ -1,6 +1,7 @@
 import Player from "../entities/Player";
 import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
+import DOMService from "./DOMController";
 
 class GameController {
   #currentPlayer = null;
@@ -19,7 +20,10 @@ class GameController {
 
   #playerTwoGameboard = null;
 
+  #DOMController = null;
+
   constructor() {
+    this.#DOMController = new DOMService();
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
     this.#playerOne = new Player();

@@ -1,3 +1,4 @@
+import GameController from './controller/GameController';
 import './style/style.css';
 
-console.log("test123");
+const controller = new GameController();
