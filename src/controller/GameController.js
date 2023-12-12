@@ -2,6 +2,7 @@ import Player from "../entities/Player";
 import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
 import DOMController from "./DOMController";
+import Coordinate from "../entities/Coordinate";
 
 class GameController {
   #currentPlayer = null;
@@ -37,13 +38,21 @@ class GameController {
   doBoardAction(event) {
     if (this.#isGameRunning === false) return;
 
+    const cellNode = event.target;
+
+    const coordX = cellNode.dataset.coordx;
+    const coordY = cellNode.dataset.coordy;
+
+    const cellCoord = new Coordinate(coordX, coordY);
+    const isHorizontal = this.#DOMController.getIsHorizontal();
+
     switch (this.#isRoundRunning) {
       case false: {
-        this.#playerPlaceShip(coord, isHorizontal);
+        this.#playerPlaceShip(cellCoord, isHorizontal);
         break;
       }
       case true: {
-        this.#playerAttack(coord);
+        this.#playerAttack(cellCoord);
         break;
       }
       default:

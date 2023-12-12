@@ -45,15 +45,17 @@ class DOMController {
 
   updateDOMBoard(boardOneData, boardTwoData) {
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
-      const nodeOne = this.#boardOne.childNodes[i];
-      // console.log("🚀 ~ file: DOMController.js:42 ~ DOMController ~ updateDOMBoard ~ boardOneData:", boardOneData)
-      const dataOne = boardOneData[i];
+      const nodeBoardOne = this.#boardOne.childNodes[i];
+      const dataBoardOne = boardOneData[i];
 
-      const nodeTwo = this.#boardTwo.childNodes[i];
-      const dataTwo = boardTwoData[i];
+      const nodeBoardTwo = this.#boardTwo.childNodes[i];
+      const dataBoardTwo = boardTwoData[i];
 
-      this.#updateCellStatus(nodeOne, dataOne);
-      this.#updateCellStatus(nodeTwo, dataTwo);
+      this.#updateCellStatus(nodeBoardOne, dataBoardOne);
+      this.#updateCellStatus(nodeBoardTwo, dataBoardTwo);
+
+      this.#updateCellMetaData(nodeBoardOne, dataBoardOne);
+      this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo);
     }
   }
 
@@ -69,6 +71,13 @@ class DOMController {
     newCell.addEventListener('click', doBoardActionHandler);
 
     return newCell;
+  }
+
+  #updateCellMetaData(cellNode, cellData) {
+    const coord = cellData.getCoord();
+
+    cellNode.setAttribute('data-coordx', coord.coordX);
+    cellNode.setAttribute('data-coordy', coord.coordY);
   }
 
   #updateCellStatus(cellNode, cellData) {
@@ -97,7 +106,7 @@ class DOMController {
     }
   }
 
-  get isHorizontal() { return this.#isHorizontal };
+  getIsHorizontal() { return this.#isHorizontal };
 }
 
 export default DOMController;

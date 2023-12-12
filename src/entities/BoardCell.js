@@ -35,6 +35,8 @@ class BoardCell {
         return true;
     }
 
+    getCoord() { return this.#coord; }
+
     getCoordString() {
         return `X: ${this.#coord.coordX} Y: ${this.#coord.coordY}`;
     }
