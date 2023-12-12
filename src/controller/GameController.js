@@ -127,6 +127,8 @@ class GameController {
     this.#playerTwo = new Player();
     this.#currentPlayer = this.#playerOne;
     this.#isPlayerOneTurn = true;
+
+    this.#updateBoard();
   }
 
   #switchCurrentPlayer() {
@@ -141,10 +143,12 @@ class GameController {
 
   #getWinner() {
     if (this.#playerOneGameboard.allShipsSunk() === true) {
+      console.log('win');
       return this.#playerTwo;
     }
-
+    
     if (this.#playerTwoGameboard.allShipsSunk() === true) {
+      console.log('win');
       return this.#playerOne;
     }
 

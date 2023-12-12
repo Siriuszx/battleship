@@ -60,10 +60,10 @@ class Gameboard {
                 if ((coordStart.coordX - 1) + length > this.#width) {
                     return false;
                 }
-                
+
                 for (let i = 0; i < length; i += 1) {
                     const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
-                    
+
                     if (boardCell.isOccupied === true) {
                         return false;
                     }
@@ -95,13 +95,14 @@ class Gameboard {
     #initBoard() {
         if (this.#board.length !== 0) return;
 
-        for (let i = 0; i < this.#width; i += 1) {
+        for (let x = 0; x < this.#width; x += 1) {
             this.#board.push([]);
 
-            for (let j = 0; j < this.#height; j += 1) {
-                const emptyCell = new BoardCell(i + 1, j + 1);
+            for (let y = 0; y < this.#height; y += 1) {
+                // swapping values due to wrong cell data representation
+                const emptyCell = new BoardCell(y + 1, x + 1);
 
-                this.#board[i].push(emptyCell);
+                this.#board[x].push(emptyCell);
             }
         }
     }

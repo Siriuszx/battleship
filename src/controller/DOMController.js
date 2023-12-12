@@ -76,8 +76,8 @@ class DOMController {
   #updateCellMetaData(cellNode, cellData) {
     const coord = cellData.getCoord();
 
-    cellNode.setAttribute('data-coordx', coord.coordY);
-    cellNode.setAttribute('data-coordy', coord.coordX);
+    cellNode.setAttribute('data-coordx', coord.coordX);
+    cellNode.setAttribute('data-coordy', coord.coordY);
   }
 
   #updateCellStatus(cellNode, cellData) {
