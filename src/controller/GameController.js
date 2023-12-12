@@ -33,11 +33,11 @@ class GameController {
 
     switch (this.#isRoundRunning) {
       case false: {
-        this.playerPlaceShip(coord, isHorizontal);
+        this.#playerPlaceShip(coord, isHorizontal);
         break;
       }
       case true: {
-        this.playerAttack(coord);
+        this.#playerAttack(coord);
         break;
       }
       default:
@@ -45,7 +45,7 @@ class GameController {
     }
   }
 
-  playerAttack(coord) {
+  #playerAttack(coord) {
     this.#attackCell(coord);
 
     const winner = this.#getWinner();
@@ -55,17 +55,17 @@ class GameController {
     }
   }
 
-  playerPlaceShip(coord, isHorizontal) {
+  #playerPlaceShip(coord, isHorizontal) {
     this.#placeShip(coord, isHorizontal);
 
     // To check if round should start once all ships have been placed
     if (this.#playerOne.getShips().length === 5 &&
       this.#playerTwo.getShips().length === 5) {
       this.#isRoundRunning = true;
-      this.#switchPlayerTurn();
     }
   }
 
+  // To let DOM start the game
   startGame() {
     if (this.#isGameRunning === true) return false;
 
@@ -74,7 +74,22 @@ class GameController {
     return true;
   }
 
-  restartGame() {
+  #runRound() {
+    if (this.#playerOne.getShips().length === 5 && this.#playerTwo.getShips().length === 5) {
+      this.#isRoundRunning = true;
+      this.#isPlayerOneTurn = true;
+      this.#switchCurrentPlayer();
+    }
+  }
+
+  #endGame(playerWinner) {
+    if (playerWinner === null) return;
+
+    this.#isGameRunning = false;
+    this.#isRoundRunning = false;
+  }
+
+  restartRound() {
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
     this.#playerOne = new Player();
@@ -83,7 +98,7 @@ class GameController {
     this.#isPlayerOneTurn = true;
   }
 
-  #switchPlayerTurn() {
+  #switchCurrentPlayer() {
     if (this.#isPlayerOneTurn) {
       this.#currentPlayer = this.#playerTwo;
     } else {
@@ -103,13 +118,6 @@ class GameController {
     }
 
     return null;
-  }
-
-  #endGame(playerWinner) {
-    if (playerWinner === null) return;
-
-    this.#isGameRunning = false;
-    this.#isRoundRunning = false;
   }
 
   #attackCell(coord) {
@@ -160,10 +168,10 @@ class GameController {
         return false;
     }
 
-    // Players should take turns after building their fleet
+    // Players should take turns after building their entire fleet
     if (isPlaced) {
       if (this.#currentPlayer.getShips().length === 4) {
-        this.#switchPlayerTurn();
+        this.#switchCurrentPlayer();
       }
 
       this.#currentPlayer.addShip(newShip);

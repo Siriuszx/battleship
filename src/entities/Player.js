@@ -2,9 +2,9 @@ class Player {
   #userName = '';
 
   #hitLog = [];
-  
+
   #playerShips = [];
-  
+
   logHit(coord) {
     this.#hitLog.push(coord);
   }
