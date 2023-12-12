@@ -1,14 +1,14 @@
 import Player from "../entities/Player";
 import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
-import DOMService from "./DOMController";
+import DOMController from "./DOMController";
 
 class GameController {
   #currentPlayer = null;
 
   #isGameRunning = true;
 
-  #isRoundRunning = false;
+  #isRoundRunning = true;
 
   #isPlayerOneTurn = true;
 
@@ -23,7 +23,7 @@ class GameController {
   #DOMController = null;
 
   constructor() {
-    this.#DOMController = new DOMService();
+    this.#DOMController = new DOMController(this.doBoardAction.bind(this));
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
     this.#playerOne = new Player();
@@ -47,6 +47,15 @@ class GameController {
       default:
         break;
     }
+
+    this.#updateBoard();
+  }
+
+  #updateBoard() {
+    const boardOneData = this.#playerOneGameboard.getBoardData();
+    const boardTwoData = this.#playerTwoGameboard.getBoardData();
+
+    this.#DOMController.updateDOMBoard(boardOneData, boardTwoData);
   }
 
   #playerAttack(coord) {

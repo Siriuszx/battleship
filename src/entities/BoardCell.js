@@ -35,9 +35,11 @@ class BoardCell {
         return true;
     }
 
-    get isOccupied() { return this.#isOccupied; }
+    getCoordString() {
+        return `X: ${this.#coord.coordX} Y: ${this.#coord.coordY}`;
+    }
 
-    get hitStatus() {
+    getHitStatus() {
         switch (this.#hasBeenHit) {
             case false: {
                 return hitStatus().NOT_HIT;
@@ -53,6 +55,8 @@ class BoardCell {
                 return null;
         }
     }
+
+    get isOccupied() { return this.#isOccupied; }
 }
 
 export default BoardCell;

@@ -43,9 +43,14 @@ class Gameboard {
     }
 
     getBoardData() {
-        const boardStateCopy = this.#board.slice();
+        const boardCopy = this.#board.slice();
+        const boardData = []; 
 
-        return boardStateCopy;
+        boardCopy.forEach(row => {
+            boardData.push(...row);
+        });
+
+        return boardData;
     }
 
     #canPlace(coordStart, isHorizontal, length) {
