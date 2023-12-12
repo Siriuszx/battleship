@@ -46,7 +46,7 @@ class GameController {
     const cellCoord = new Coordinate(coordX, coordY);
     const isHorizontal = this.#DOMController.getIsHorizontal();
 
-    
+
     switch (this.#isRoundRunning) {
       case false: {
         this.#playerPlaceShip(cellCoord, isHorizontal);
@@ -82,12 +82,8 @@ class GameController {
 
   #playerPlaceShip(coord, isHorizontal) {
     this.#placeShip(coord, isHorizontal);
-    
-    // To check if round should start once all ships have been placed
-    if (this.#playerOne.getShips().length === 5 &&
-      this.#playerTwo.getShips().length === 5) {
-      this.#isRoundRunning = true;
-    }
+
+    this.#runRound();
   }
 
   // To let DOM start the game
@@ -107,8 +103,10 @@ class GameController {
     };
   }
 
+  // To check if round should start once all ships have been placed
   #runRound() {
     if (this.#playerOne.getShips().length === 5 && this.#playerTwo.getShips().length === 5) {
+      console.log('round is running');
       this.#isRoundRunning = true;
       this.#isPlayerOneTurn = true;
       this.#switchCurrentPlayer();
@@ -200,15 +198,18 @@ class GameController {
       default:
         return false;
     }
-    console.log(this.#currentPlayer.getShips().length);
 
     // Players should take turns after building their entire fleet
     if (isPlaced) {
-      if (this.#currentPlayer.getShips().length === 4) {
+      this.#currentPlayer.addShip(newShip);
+      console.log('placed');
+      console.log(`current player ships ${this.#currentPlayer.getShips().length}`);
+
+      if (this.#currentPlayer.getShips().length === 5) {
+        console.log('switch');
         this.#switchCurrentPlayer();
       }
 
-      this.#currentPlayer.addShip(newShip);
       return true;
     }
 
