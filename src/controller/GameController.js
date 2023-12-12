@@ -23,16 +23,18 @@ class GameController {
   #DOMController = null;
 
   constructor() {
-    this.#DOMController = new DOMController(this.doBoardAction.bind(this));
+    this.#DOMController = new DOMController(this.#getBundledAPI());
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
     this.#playerOne = new Player();
     this.#playerTwo = new Player();
     this.#currentPlayer = this.#playerOne;
+
+    this.#updateBoard();
   }
 
   // Cb to let other layers of program interact with our game controller
-  doBoardAction(coord, isHorizontal = null) {
+  doBoardAction(event) {
     if (this.#isGameRunning === false) return;
 
     switch (this.#isRoundRunning) {
@@ -85,6 +87,14 @@ class GameController {
     this.#isGameRunning = true;
 
     return true;
+  }
+
+  #getBundledAPI() {
+    return {
+      startGame: this.startGame.bind(this),
+      doBoardAction: this.doBoardAction.bind(this),
+      restartRound: this.restartRound.bind(this),
+    };
   }
 
   #runRound() {

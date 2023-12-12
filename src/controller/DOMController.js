@@ -6,12 +6,27 @@ class DOMController {
 
   #boardTwo = document.getElementById('board-two');
 
+  #startGameButton = document.getElementById('start-game');
+
+  #switchHorizontalButton = document.getElementById('horizontal-status');
+
+  #restartGameButton = document.getElementById('restart-game');
+
   #boardInit = false;
 
   #NUMBER_OF_CELLS = 100;
 
-  constructor(doBoardActionHandler) {
-    this.#initBoard(doBoardActionHandler);
+  #isHorizontal = true;
+
+  constructor(controllerAPI) {
+    this.#initBoard(controllerAPI.doBoardAction);
+    this.#mapHandlers(controllerAPI);
+  }
+
+  #mapHandlers(controllerAPI) {
+    this.#startGameButton.addEventListener('click', controllerAPI.startGame);
+    this.#switchHorizontalButton.addEventListener('click', this.#toggleHorizontal.bind(this));
+    this.#restartGameButton.addEventListener('click', controllerAPI.restartRound);
   }
 
   #initBoard(doBoardActionHandler) {
@@ -31,8 +46,9 @@ class DOMController {
   updateDOMBoard(boardOneData, boardTwoData) {
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
       const nodeOne = this.#boardOne.childNodes[i];
+      // console.log("🚀 ~ file: DOMController.js:42 ~ DOMController ~ updateDOMBoard ~ boardOneData:", boardOneData)
       const dataOne = boardOneData[i];
-      
+
       const nodeTwo = this.#boardTwo.childNodes[i];
       const dataTwo = boardTwoData[i];
 
@@ -41,17 +57,22 @@ class DOMController {
     }
   }
 
+  #toggleHorizontal() {
+    this.#isHorizontal = !this.#isHorizontal;
+    this.#switchHorizontalButton.classList.toggle('button-active');
+  }
+
   #createBoardCell(doBoardActionHandler) {
     const newCell = document.createElement('div');
-    
+
     newCell.classList.add('board-cell');
     newCell.addEventListener('click', doBoardActionHandler);
-    
+
     return newCell;
   }
 
   #updateCellStatus(cellNode, cellData) {
-    if(!cellNode || !cellData) return;
+    if (!cellNode || !cellData) return;
 
     const node = cellNode;
     const data = cellData;
@@ -75,6 +96,8 @@ class DOMController {
         break;
     }
   }
+
+  get isHorizontal() { return this.#isHorizontal };
 }
 
 export default DOMController;

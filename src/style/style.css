@@ -13,9 +13,30 @@ body {
 }
 
 .game-ui-container {
+  padding: 100px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+
+  grid-template-areas:
+    'button'
+    'board';
+}
+
+.controls-container {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  gap: 2em
+}
+
+.boards-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   gap: 2em;
 }
 
@@ -23,6 +44,8 @@ body {
   height: 500px;
   width: 500px;
   border: 1px solid black;
+
+  grid-area: board;
 
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -35,4 +58,29 @@ body {
 
 .board-cell:hover {
   border: 2px solid lightgreen;
+}
+
+.button {
+  grid-area: button;
+
+  padding: 0.5rem;
+  color: #fff;
+  border: 2px solid black;
+  background-color: black;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.button-active {
+  color: #000;
+  background-color: white;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.button:hover {
+  color: #000;
+  background-color: white;
+  text-transform: uppercase;
+  font-weight: 700;
 }
