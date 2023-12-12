@@ -16,7 +16,7 @@ class Gameboard {
 
     placeShip(ship, isHorizontal, length) {
         if (!this.#canPlace(ship.getCoordStart(), isHorizontal, length)) return false;
-        
+
         this.#shipList.push(ship);
 
         if (isHorizontal === true) {
@@ -44,7 +44,7 @@ class Gameboard {
 
     getBoardData() {
         const boardCopy = this.#board.slice();
-        const boardData = []; 
+        const boardData = [];
 
         boardCopy.forEach(row => {
             boardData.push(...row);
@@ -56,13 +56,14 @@ class Gameboard {
     #canPlace(coordStart, isHorizontal, length) {
         switch (isHorizontal) {
             case true: {
-                if (coordStart.coordX + length > this.#width) {
+                // to exclude starting point from calculation
+                if ((coordStart.coordX - 1) + length > this.#width) {
                     return false;
                 }
-
+                
                 for (let i = 0; i < length; i += 1) {
                     const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
-
+                    
                     if (boardCell.isOccupied === true) {
                         return false;
                     }
@@ -71,7 +72,8 @@ class Gameboard {
                 return true;
             }
             case false: {
-                if (coordStart.coordY + length > this.#height) {
+                // to exclude starting point from calculation
+                if ((coordStart.coordY - 1) + length > this.#height) {
                     return false;
                 }
 

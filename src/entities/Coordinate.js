@@ -8,9 +8,9 @@ class Coordinate {
         this.#coordY = coordY;
     }
 
-    get coordX() { return this.#coordX; }
+    get coordX() { return Number.parseInt(this.#coordX, 16); }
 
-    get coordY() { return this.#coordY; }
+    get coordY() { return Number.parseInt(this.#coordY, 16); }
 }
 
 export default Coordinate;

@@ -9,7 +9,7 @@ class GameController {
 
   #isGameRunning = true;
 
-  #isRoundRunning = true;
+  #isRoundRunning = false;
 
   #isPlayerOneTurn = true;
 
@@ -46,6 +46,7 @@ class GameController {
     const cellCoord = new Coordinate(coordX, coordY);
     const isHorizontal = this.#DOMController.getIsHorizontal();
 
+    
     switch (this.#isRoundRunning) {
       case false: {
         this.#playerPlaceShip(cellCoord, isHorizontal);
@@ -81,7 +82,7 @@ class GameController {
 
   #playerPlaceShip(coord, isHorizontal) {
     this.#placeShip(coord, isHorizontal);
-
+    
     // To check if round should start once all ships have been placed
     if (this.#playerOne.getShips().length === 5 &&
       this.#playerTwo.getShips().length === 5) {
@@ -199,6 +200,7 @@ class GameController {
       default:
         return false;
     }
+    console.log(this.#currentPlayer.getShips().length);
 
     // Players should take turns after building their entire fleet
     if (isPlaced) {
