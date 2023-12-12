@@ -1,7 +1,7 @@
-import BoardCell from "../entities/BoardCell";
-import Ship from "../entities/Ship";
+import BoardCell from "./BoardCell";
+import Ship from "./Ship";
 
-class GameboardController {
+class Gameboard {
     #width = 10;
 
     #height = 10;
@@ -14,22 +14,20 @@ class GameboardController {
         this.#initBoard();
     }
 
-    placeShip(coordStart, isHorizontal, length) {
-        if (!this.#canPlace(coordStart, isHorizontal, length)) return false;
-
-        const newShip = new Ship(coordStart, isHorizontal, length);
-
-        this.#shipList.push(newShip);
+    placeShip(ship, isHorizontal, length) {
+        if (!this.#canPlace(ship.getCoordStart(), isHorizontal, length)) return false;
+        
+        this.#shipList.push(ship);
 
         if (isHorizontal === true) {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.#board[(coordStart.coordX - 1) + i][coordStart.coordY - 1];
-                boardCell.occupy(newShip);
+                const boardCell = this.#board[(ship.getCoordStart().coordX - 1) + i][ship.getCoordStart().coordY - 1];
+                boardCell.occupy(ship);
             }
         } else {
             for (let i = 0; i < length; i += 1) {
-                const boardCell = this.#board[coordStart.coordX - 1][(coordStart.coordY - 1) + i];
-                boardCell.occupy(newShip);
+                const boardCell = this.#board[ship.getCoordStart().coordX - 1][(ship.getCoordStart().coordY - 1) + i];
+                boardCell.occupy(ship);
             }
         }
 
@@ -102,4 +100,4 @@ class GameboardController {
     }
 }
 
-export default GameboardController;
+export default Gameboard;

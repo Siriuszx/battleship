@@ -2,23 +2,32 @@ class Player {
   #userName = '';
 
   #hitLog = [];
-
-  constructor(userName) {
-    this.#userName = userName;
-  }
-
+  
+  #playerShips = [];
+  
   logHit(coord) {
     this.#hitLog.push(coord);
   }
 
-  getHitLog() {
-    const hitLogCopy = this.#hitLog.slice();
-
-    return hitLogCopy;
+  addShip(ship) {
+    this.#playerShips.push(ship);
   }
 
-  clearHitLog() {
+  getHitLog() {
+    return this.#hitLog.slice();
+  }
+
+  getShips() {
+    return this.#playerShips.slice();
+  }
+
+  resetUser() {
     this.#hitLog = [];
+    this.#playerShips = [];
+  }
+
+  setUserName(userName) {
+    this.#userName = userName;
   }
 
   getUserName() {

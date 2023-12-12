@@ -4,8 +4,11 @@ class Ship {
   #timesHit = 0;
 
   #shipPieces = [];
+  
+  #coordStart = null;
 
   constructor(coordStart, horizontal, length) {
+    this.#coordStart = coordStart
     this.#buildShip(coordStart, horizontal, length);
   }
 
@@ -15,7 +18,7 @@ class Ship {
     );
 
     if (shipPiece === undefined) return false;
-    if (shipPiece.hitStatus === true) return false;
+    if (shipPiece.hitStatus === true) return false; 
 
     this.#timesHit += 1;
 
@@ -40,6 +43,10 @@ class Ship {
 
       this.#shipPieces.push(shipPieceCoord);
     }
+  }
+
+  getCoordStart() {
+    return this.#coordStart;
   }
 
   get length() { return this.#shipPieces.length; }
