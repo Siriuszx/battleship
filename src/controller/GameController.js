@@ -37,18 +37,16 @@ class GameController {
 
   // Callback to let other layers of program interact with our game controller
   doBoardActionHandler(event) {
-    if (this.#isGameRunning === false){
-      return;
-    }  
+    if (this.#isGameRunning === false) return;
 
     const cellNode = event.target;
 
     const isCellOwner = cellNode.dataset.playername === this.#currentPlayer.getPlayerName();
+    const isHorizontal = this.#DOMController.getIsHorizontal();
+    
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
-    
     const cellCoord = new Coordinate(coordX, coordY);
-    const isHorizontal = this.#DOMController.getIsHorizontal();
     
     switch (this.#isRoundRunning) {
       case false: {
@@ -69,6 +67,23 @@ class GameController {
 
     this.#updateGameUI();
     console.log('ACTION');
+  }
+
+  #updateGameUI(currentCellCoord) {
+    const gameStateData = this.#getGameStateData();
+
+    this.#DOMController.updateUI(gameStateData, currentCellCoord);
+  }
+
+  #updateBoardHitsHandler(event) {
+    const cellNode = event.target;
+
+    const coordX = cellNode.dataset.coordx;
+    const coordY = cellNode.dataset.coordy;
+
+    const currentCellCoord = new Coordinate(coordX, coordY);
+
+    this.#updateGameUI(currentCellCoord);
   }
 
   startGameHandler(event) {
@@ -93,12 +108,6 @@ class GameController {
     console.log('RESTARTED');
   }
 
-  #updateGameUI() {
-    const gameStateData = this.#getGameStateData();
-
-    this.#DOMController.updateUI(gameStateData);
-  }
-
   #getGameStateData() {
     const gameStateDataBuilder = new GameStateDataBuilder();
 
@@ -111,6 +120,9 @@ class GameController {
       .setPlayerTwoUserName(this.#playerTwo.getPlayerName())
       .setPlayerOneGameboardData(this.#playerOneGameboard.getGameboardData(this.#playerOne.getPlayerName()))
       .setPlayerTwoGameboardData(this.#playerTwoGameboard.getGameboardData(this.#playerTwo.getPlayerName()))
+      .setPlayerOneFleetSize(this.#playerOne.fleetSize)
+      .setPlayerTwoFleetSize(this.#playerTwo.fleetSize)
+      .setCurrentPlayerFleetSize(this.#currentPlayer.fleetSize)
       .build();
 
     return gameStateData;
@@ -259,6 +271,7 @@ class GameController {
       startGameHandler: this.startGameHandler.bind(this),
       doBoardActionHandler: this.doBoardActionHandler.bind(this),
       restartRoundHandler: this.restartRoundHandler.bind(this),
+      updateBoardHitsHandler: this.#updateBoardHitsHandler.bind(this),
     };
   }
 }

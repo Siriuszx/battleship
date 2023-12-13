@@ -15,6 +15,12 @@ class GameStateData {
 
     #playerTwoGameboardData;
 
+    #playerOneFleetSize;
+
+    #playerTwoFleetSize;
+
+    #currentPlayerFleetSize;
+
     get currentUserName() { return this.#currentPlayerUserName; }
 
     set currentUserName(currentUserName) { this.#currentPlayerUserName = currentUserName; }
@@ -46,6 +52,18 @@ class GameStateData {
     get playerTwoGameboardData() { return this.#playerTwoGameboardData; }
 
     set playerTwoGameboardData(playerTwoGameboardData) { this.#playerTwoGameboardData = playerTwoGameboardData; }
+
+    get playerOneFleetSize() { return this.#playerOneFleetSize; }
+
+    set playerOneFleetSize(playerOneFleetSize) { this.#playerOneFleetSize = playerOneFleetSize; }
+    
+    get playerTwoFleetSize() { return this.#playerTwoFleetSize; }
+
+    set playerTwoFleetSize(playerTwoFleetSize) { this.#playerTwoFleetSize = playerTwoFleetSize; }
+
+    get currentPlayerFleetSize() { return this.#currentPlayerFleetSize; }
+
+    set currentPlayerFleetSize(currentPlayerFleetSize) { this.#currentPlayerFleetSize = currentPlayerFleetSize; }
 }
 
 export default GameStateData;

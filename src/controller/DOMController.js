@@ -18,8 +18,12 @@ class DOMController {
 
   #isHorizontal = true;
 
+  #BOARD_HEIGHT = 10;
+
+  #BOARD_WIDTH = 10;
+
   constructor(controllerAPI) {
-    this.#initBoard(controllerAPI.doBoardActionHandler);
+    this.#initBoard(controllerAPI.doBoardActionHandler, controllerAPI.updateBoardHitsHandler);
     this.#mapHandlers(controllerAPI);
   }
 
@@ -29,12 +33,12 @@ class DOMController {
     this.#restartGameButton.addEventListener('click', controllerAPI.restartRoundHandler);
   }
 
-  #initBoard(doBoardActionHandler) {
+  #initBoard(doBoardActionHandler, updateBoardHitsHandler) {
     if (this.#boardInit === true) return;
 
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
-      const newBoardCellOne = this.#createBoardCell(doBoardActionHandler);
-      const newBoardCellTwo = this.#createBoardCell(doBoardActionHandler);
+      const newBoardCellOne = this.#createBoardCell(doBoardActionHandler, updateBoardHitsHandler);
+      const newBoardCellTwo = this.#createBoardCell(doBoardActionHandler, updateBoardHitsHandler);
 
       this.#boardOne.appendChild(newBoardCellOne);
       this.#boardTwo.appendChild(newBoardCellTwo);
@@ -43,14 +47,15 @@ class DOMController {
     this.#boardInit = true;
   }
 
-  updateUI(gameStateData) {
-    this.#updateDOMBoard(
-      gameStateData.playerOneGameboardData,
-      gameStateData.playerTwoGameboardData
-    );
+  updateUI(gameStateData, currentCellCoord) {
+    this.#updateDOMBoard(gameStateData);
+    this.#highlighCellsBuilding(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning);
   }
 
-  #updateDOMBoard(gameboardOneData, gameboardTwoData) {
+  #updateDOMBoard(gameStateData) {
+    const gameboardOneData = gameStateData.playerOneGameboardData;
+    const gameboardTwoData = gameStateData.playerTwoGameboardData;
+
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
       const nodeBoardOne = this.#boardOne.childNodes[i];
       const dataBoardOne = gameboardOneData.boardData[i];
@@ -58,16 +63,12 @@ class DOMController {
       const nodeBoardTwo = this.#boardTwo.childNodes[i];
       const dataBoardTwo = gameboardTwoData.boardData[i];
 
-      this.#updateCellStatus(nodeBoardOne, dataBoardOne);
-      this.#updateCellStatus(nodeBoardTwo, dataBoardTwo);
+      this.#updateCellStatus(nodeBoardOne, dataBoardOne, gameStateData.isRoundRunning);
+      this.#updateCellStatus(nodeBoardTwo, dataBoardTwo, gameStateData.isRoundRunning);
 
       this.#updateCellMetaData(nodeBoardOne, dataBoardOne, gameboardOneData.playerUserName);
       this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo, gameboardTwoData.playerUserName);
     }
-  }
-
-  #updateGameStatus(gameStateData) {
-
   }
 
   #toggleHorizontal() {
@@ -75,11 +76,12 @@ class DOMController {
     this.#switchHorizontalButton.classList.toggle('button-active');
   }
 
-  #createBoardCell(doBoardActionHandler) {
+  #createBoardCell(doBoardActionHandler, updateBoardHitsHandler) {
     const newCell = document.createElement('div');
 
     newCell.classList.add('board-cell');
     newCell.addEventListener('click', doBoardActionHandler);
+    newCell.addEventListener('mouseover', updateBoardHitsHandler);
 
     return newCell;
   }
@@ -92,7 +94,7 @@ class DOMController {
     cellNode.setAttribute('data-playername', playername);
   }
 
-  #updateCellStatus(cellNode, cellData) {
+  #updateCellStatus(cellNode, cellData, isRoundRunning) {
     if (!cellNode || !cellData) return;
 
     const node = cellNode;
@@ -117,7 +119,54 @@ class DOMController {
         break;
     }
 
-    // if(cellData.isOccupied) node.style.backgroundColor = '#000';
+    if (cellData.isOccupied && isRoundRunning === false) node.style.backgroundColor = '#000';
+  }
+
+  #highlighCellsBuilding(coord, currentPlayerFleetSize, isRoundRunning) {
+    if (isRoundRunning === true) return;
+
+    const shipSizePattern = this.#getShipSizePattern(currentPlayerFleetSize);
+
+    this.#highlightCells(coord, shipSizePattern, this.#isHorizontal);
+  }
+
+  #highlightCells(coord, shipSizePattern) {
+    const isHorizontal = this.#isHorizontal;
+
+    switch (isHorizontal) {
+      case true:
+        for (let i = 0; i < shipSizePattern; i += 1) {
+          if ((coord.coordX + shipSizePattern) - 1 > this.#BOARD_WIDTH) break;
+          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX + i}"][data-coordy="${coord.coordY}"]`);
+          currentNode.style.backgroundColor = '#808080';
+        }
+        break;
+      case false:
+        for (let i = 0; i < shipSizePattern; i += 1) {
+          if ((coord.coordY + shipSizePattern) - 1 > this.#BOARD_HEIGHT) break;
+          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX}"][data-coordy="${coord.coordY + i}"]`);
+          currentNode.style.backgroundColor = '#808080';
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  #getShipSizePattern(currentPlayerFleetSize) {
+    switch (currentPlayerFleetSize) {
+      case 0:
+        return 5;
+      case 1:
+        return 4;
+      case 2:
+      case 3:
+        return 3;
+      case 4:
+        return 2;
+      default:
+        return 0;
+    }
   }
 
   getIsHorizontal() { return this.#isHorizontal };

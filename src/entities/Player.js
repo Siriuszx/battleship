@@ -37,6 +37,8 @@ class Player {
   getPlayerName() {
     return this.#playerName;
   };
+
+  get fleetSize() { return this.#playerShips.length; }
 }
 
 export default Player;

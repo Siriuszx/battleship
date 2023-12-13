@@ -47,6 +47,21 @@ class GameStateDataBuilder {
         return this;
     }
 
+    setPlayerOneFleetSize(playerOneFleetSize) {
+        this.#gameStateData.playerOneFleetSize = playerOneFleetSize;
+        return this;
+    }
+
+    setPlayerTwoFleetSize(playerTwoFleetSize) {
+        this.#gameStateData.playerTwoFleetSize = playerTwoFleetSize;
+        return this;
+    }
+
+    setCurrentPlayerFleetSize(currentPlayerFleetSize) {
+        this.#gameStateData.currentPlayerFleetSize = currentPlayerFleetSize;
+        return this;
+    }
+
     reset() {
         this.#gameStateData = new GameStateData();
     }
