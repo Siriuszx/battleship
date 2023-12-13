@@ -61,8 +61,8 @@ class DOMController {
       this.#updateCellStatus(nodeBoardOne, dataBoardOne);
       this.#updateCellStatus(nodeBoardTwo, dataBoardTwo);
 
-      this.#updateCellMetaData(nodeBoardOne, dataBoardOne);
-      this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo);
+      this.#updateCellMetaData(nodeBoardOne, dataBoardOne, gameboardOneData.playerUserName);
+      this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo, gameboardTwoData.playerUserName);
     }
   }
 
@@ -84,11 +84,12 @@ class DOMController {
     return newCell;
   }
 
-  #updateCellMetaData(cellNode, cellData) {
+  #updateCellMetaData(cellNode, cellData, playername) {
     const coord = cellData.getCoord();
 
     cellNode.setAttribute('data-coordx', coord.coordX);
     cellNode.setAttribute('data-coordy', coord.coordY);
+    cellNode.setAttribute('data-playername', playername);
   }
 
   #updateCellStatus(cellNode, cellData) {

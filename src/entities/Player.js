@@ -1,12 +1,12 @@
 class Player {
-  #userName = '';
+  #playerName = '';
 
   #hitLog = [];
 
   #playerShips = [];
 
   constructor(userName) {
-    this.userName = userName;
+    this.#playerName = userName;
   }
 
   logHit(coord) {
@@ -30,12 +30,12 @@ class Player {
     this.#playerShips = [];
   }
 
-  setUserName(userName) {
-    this.#userName = userName;
+  setPlayerName(userName) {
+    this.#playerName = userName;
   }
 
-  getUserName() {
-    return this.#userName
+  getPlayerName() {
+    return this.#playerName;
   };
 }
 

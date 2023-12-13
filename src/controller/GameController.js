@@ -25,14 +25,14 @@ class GameController {
   #DOMController = null;
 
   constructor() {
-    this.#DOMController = new DOMController(this.#getBundledAPI());
+    this.#DOMController = new DOMController(this.#getAPIContainer());
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
     this.#playerOne = new Player('Player One');
     this.#playerTwo = new Player('Player Two');
     this.#currentPlayer = this.#playerOne;
 
-    this.#updateBoard();
+    this.#updateGameUI();
   }
 
   // Callback to let other layers of program interact with our game controller
@@ -41,7 +41,7 @@ class GameController {
 
     const cellNode = event.target;
 
-    if (cellNode.dataset.username !== this.#currentPlayer.getUserName()) return;
+    if (cellNode.dataset.playername !== this.#currentPlayer.getPlayerName()) return;
 
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
@@ -62,7 +62,7 @@ class GameController {
         break;
     }
 
-    this.#updateBoard();
+    this.#updateGameUI();
   }
 
   startGameHandler(event) {
@@ -81,12 +81,11 @@ class GameController {
     this.#currentPlayer = this.#playerOne;
     this.#isPlayerOneTurn = true;
 
-    this.#updateBoard();
+    this.#updateGameUI();
   }
 
-  #updateBoard() {
+  #updateGameUI() {
     const gameStateData = this.#getGameStateData();
-    console.log("🚀 ~ file: GameController.js:89 ~ GameController ~ #updateBoard ~ gameStateData:", gameStateData)
 
     this.#DOMController.updateUI(gameStateData);
   }
@@ -95,14 +94,14 @@ class GameController {
     const gameStateDataBuilder = new GameStateDataBuilder();
 
     const gameStateData = gameStateDataBuilder
-      .setCurrentUserName(this.#currentPlayer.getUserName())
+      .setCurrentUserName(this.#currentPlayer.getPlayerName())
       .setIsGameRunning(this.#isGameRunning)
       .setIsRoundRunning(this.#isRoundRunning)
       .setIsPlayerOneTurn(this.#isPlayerOneTurn)
-      .setPlayerOneUserName(this.#playerOne.getUserName())
-      .setPlayerTwoUserName(this.#playerTwo.getUserName())
-      .setPlayerOneGameboardData(this.#playerOneGameboard.getGameboardData())
-      .setPlayerTwoGameboardData(this.#playerOneGameboard.getGameboardData())
+      .setPlayerOneUserName(this.#playerOne.getPlayerName())
+      .setPlayerTwoUserName(this.#playerTwo.getPlayerName())
+      .setPlayerOneGameboardData(this.#playerOneGameboard.getGameboardData(this.#playerOne.getPlayerName()))
+      .setPlayerTwoGameboardData(this.#playerOneGameboard.getGameboardData(this.#playerTwo.getPlayerName()))
       .build();
 
     return gameStateData;
@@ -245,7 +244,7 @@ class GameController {
     return false;
   }
 
-  #getBundledAPI() {
+  #getAPIContainer() {
     return {
       startGameHandler: this.startGameHandler.bind(this),
       doBoardActionHandler: this.doBoardActionHandler.bind(this),
