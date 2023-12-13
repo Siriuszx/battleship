@@ -43,11 +43,11 @@ class GameController {
 
     const isCellOwner = cellNode.dataset.playername === this.#currentPlayer.getPlayerName();
     const isHorizontal = this.#DOMController.getIsHorizontal();
-    
+
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
     const cellCoord = new Coordinate(coordX, coordY);
-    
+
     switch (this.#isRoundRunning) {
       case false: {
         // to let player place ships on HIS OWN board only
@@ -65,18 +65,14 @@ class GameController {
         break;
     }
 
-    this.#updateGameUI();
+    this.#updateGameUI(cellCoord);
     console.log('ACTION');
   }
 
-  #updateGameUI(currentCellCoord) {
-    const gameStateData = this.#getGameStateData();
-
-    this.#DOMController.updateUI(gameStateData, currentCellCoord);
-  }
-
-  #updateBoardHitsHandler(event) {
+  #updateBoardHintsHandler(event) {
     const cellNode = event.target;
+
+    if (cellNode.dataset.playername !== this.#currentPlayer.getPlayerName()) return;
 
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
@@ -84,6 +80,12 @@ class GameController {
     const currentCellCoord = new Coordinate(coordX, coordY);
 
     this.#updateGameUI(currentCellCoord);
+  }
+
+  #updateGameUI(currentCellCoord) {
+    const gameStateData = this.#getGameStateData();
+
+    this.#DOMController.updateUI(gameStateData, currentCellCoord);
   }
 
   startGameHandler(event) {
@@ -271,7 +273,7 @@ class GameController {
       startGameHandler: this.startGameHandler.bind(this),
       doBoardActionHandler: this.doBoardActionHandler.bind(this),
       restartRoundHandler: this.restartRoundHandler.bind(this),
-      updateBoardHitsHandler: this.#updateBoardHitsHandler.bind(this),
+      updateBoardHintsHandler: this.#updateBoardHintsHandler.bind(this),
     };
   }
 }

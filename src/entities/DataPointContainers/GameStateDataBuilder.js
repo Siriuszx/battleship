@@ -8,7 +8,7 @@ class GameStateDataBuilder {
     }
 
     setCurrentUserName(currentUserName) {
-        this.#gameStateData.currentPlayerUserName = currentUserName;
+        this.#gameStateData.currentUserName = currentUserName;
         return this;
     }
 

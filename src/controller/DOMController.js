@@ -23,7 +23,7 @@ class DOMController {
   #BOARD_WIDTH = 10;
 
   constructor(controllerAPI) {
-    this.#initBoard(controllerAPI.doBoardActionHandler, controllerAPI.updateBoardHitsHandler);
+    this.#initBoard(controllerAPI.doBoardActionHandler, controllerAPI.updateBoardHintsHandler);
     this.#mapHandlers(controllerAPI);
   }
 
@@ -45,11 +45,6 @@ class DOMController {
     }
 
     this.#boardInit = true;
-  }
-
-  updateUI(gameStateData, currentCellCoord) {
-    this.#updateDOMBoard(gameStateData);
-    this.#highlighCellsBuilding(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning);
   }
 
   #updateDOMBoard(gameStateData) {
@@ -76,12 +71,12 @@ class DOMController {
     this.#switchHorizontalButton.classList.toggle('button-active');
   }
 
-  #createBoardCell(doBoardActionHandler, updateBoardHitsHandler) {
+  #createBoardCell(doBoardActionHandler, updateBoardHintsHandler) {
     const newCell = document.createElement('div');
 
     newCell.classList.add('board-cell');
     newCell.addEventListener('click', doBoardActionHandler);
-    newCell.addEventListener('mouseover', updateBoardHitsHandler);
+    newCell.addEventListener('mouseover', updateBoardHintsHandler);
 
     return newCell;
   }
@@ -122,29 +117,38 @@ class DOMController {
     if (cellData.isOccupied && isRoundRunning === false) node.style.backgroundColor = '#000';
   }
 
-  #highlighCellsBuilding(coord, currentPlayerFleetSize, isRoundRunning) {
+  updateUI(gameStateData, currentCellCoord) {
+    this.#updateDOMBoard(gameStateData);
+    
+    if(currentCellCoord) {
+      this.#highlighCellsBuilding(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning, gameStateData.currentUserName);
+    }
+  }
+
+  #highlighCellsBuilding(coord, currentPlayerFleetSize, isRoundRunning, currentPlayerName) {
     if (isRoundRunning === true) return;
 
     const shipSizePattern = this.#getShipSizePattern(currentPlayerFleetSize);
 
-    this.#highlightCells(coord, shipSizePattern, this.#isHorizontal);
+    this.#highlightCells(coord, shipSizePattern, currentPlayerName);
   }
 
-  #highlightCells(coord, shipSizePattern) {
+  #highlightCells(coord, shipSizePattern, currentPlayerName) {
+    console.log("🚀 ~ file: DOMController.js:137 ~ DOMController ~ #highlightCells ~ currentPlayerName:", currentPlayerName)
     const isHorizontal = this.#isHorizontal;
 
     switch (isHorizontal) {
       case true:
         for (let i = 0; i < shipSizePattern; i += 1) {
           if ((coord.coordX + shipSizePattern) - 1 > this.#BOARD_WIDTH) break;
-          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX + i}"][data-coordy="${coord.coordY}"]`);
+          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX + i}"][data-coordy="${coord.coordY}"][data-playername="${currentPlayerName}"]`);
           currentNode.style.backgroundColor = '#808080';
         }
         break;
       case false:
         for (let i = 0; i < shipSizePattern; i += 1) {
           if ((coord.coordY + shipSizePattern) - 1 > this.#BOARD_HEIGHT) break;
-          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX}"][data-coordy="${coord.coordY + i}"]`);
+          const currentNode = document.querySelector(`div[data-coordx="${coord.coordX}"][data-coordy="${coord.coordY + i}"][data-playername="${currentPlayerName}"]`);
           currentNode.style.backgroundColor = '#808080';
         }
         break;
