@@ -19,14 +19,14 @@ class DOMController {
   #isHorizontal = true;
 
   constructor(controllerAPI) {
-    this.#initBoard(controllerAPI.doBoardAction);
+    this.#initBoard(controllerAPI.doBoardActionHandler);
     this.#mapHandlers(controllerAPI);
   }
 
   #mapHandlers(controllerAPI) {
-    this.#startGameButton.addEventListener('click', controllerAPI.startGame);
+    this.#startGameButton.addEventListener('click', controllerAPI.startGameHandler);
     this.#switchHorizontalButton.addEventListener('click', this.#toggleHorizontal.bind(this));
-    this.#restartGameButton.addEventListener('click', controllerAPI.restartRound);
+    this.#restartGameButton.addEventListener('click', controllerAPI.restartRoundHandler);
   }
 
   #initBoard(doBoardActionHandler) {

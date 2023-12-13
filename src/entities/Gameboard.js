@@ -1,5 +1,4 @@
 import BoardCell from "./BoardCell";
-import Ship from "./Ship";
 
 class Gameboard {
     #width = 10;
@@ -8,6 +7,7 @@ class Gameboard {
 
     #board = [];
 
+    // swapping supposedly X and Y coordinates here because of failed attempt to implement 2D arrays in JavaScript...
     #shipList = [];
 
     constructor() {

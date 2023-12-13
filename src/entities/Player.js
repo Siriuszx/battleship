@@ -5,6 +5,10 @@ class Player {
 
   #playerShips = [];
 
+  constructor(userName) {
+    this.userName = userName;
+  }
+
   logHit(coord) {
     this.#hitLog.push(coord);
   }

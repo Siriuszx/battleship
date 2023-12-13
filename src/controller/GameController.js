@@ -3,6 +3,7 @@ import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
 import DOMController from "./DOMController";
 import Coordinate from "../entities/Coordinate";
+import GameStateData from "../entities/GameStateData";
 
 class GameController {
   #currentPlayer = null;
@@ -27,25 +28,26 @@ class GameController {
     this.#DOMController = new DOMController(this.#getBundledAPI());
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
-    this.#playerOne = new Player();
-    this.#playerTwo = new Player();
+    this.#playerOne = new Player('Player One');
+    this.#playerTwo = new Player('Player Two');
     this.#currentPlayer = this.#playerOne;
 
     this.#updateBoard();
   }
 
-  // Cb to let other layers of program interact with our game controller
-  doBoardAction(event) {
+  // Callback to let other layers of program interact with our game controller
+  doBoardActionHandler(event) {
     if (this.#isGameRunning === false) return;
 
     const cellNode = event.target;
+
+    if(cellNode.dataset.username !== this.#currentPlayer.getUserName()) return;
 
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
 
     const cellCoord = new Coordinate(coordX, coordY);
     const isHorizontal = this.#DOMController.getIsHorizontal();
-
 
     switch (this.#isRoundRunning) {
       case false: {
@@ -63,31 +65,7 @@ class GameController {
     this.#updateBoard();
   }
 
-  #updateBoard() {
-    const boardOneData = this.#playerOneGameboard.getBoardData();
-    const boardTwoData = this.#playerTwoGameboard.getBoardData();
-
-    this.#DOMController.updateDOMBoard(boardOneData, boardTwoData);
-  }
-
-  #playerAttack(coord) {
-    this.#attackCell(coord);
-
-    const winner = this.#getWinner();
-
-    if (winner !== null) {
-      this.#endGame(winner);
-    }
-  }
-
-  #playerPlaceShip(coord, isHorizontal) {
-    this.#placeShip(coord, isHorizontal);
-
-    this.#runRound();
-  }
-
-  // To let DOM start the game
-  startGame() {
+  startGameHandler(event) {
     if (this.#isGameRunning === true) return false;
 
     this.#isGameRunning = true;
@@ -95,12 +73,26 @@ class GameController {
     return true;
   }
 
-  #getBundledAPI() {
-    return {
-      startGame: this.startGame.bind(this),
-      doBoardAction: this.doBoardAction.bind(this),
-      restartRound: this.restartRound.bind(this),
-    };
+  restartRoundHandler(event) {
+    this.#playerOneGameboard = new Gameboard();
+    this.#playerTwoGameboard = new Gameboard();
+    this.#playerOne = new Player();
+    this.#playerTwo = new Player();
+    this.#currentPlayer = this.#playerOne;
+    this.#isPlayerOneTurn = true;
+
+    this.#updateBoard();
+  }
+
+  #updateBoard() {
+    const boardOneData = this.#playerOneGameboard.getBoardData();
+    const boardTwoData = this.#playerTwoGameboard.getBoardData();
+
+    this.#DOMController.updateDOMBoard(boardOneData, boardTwoData);
+  }
+
+  #getBoardState() {
+    // builder pattern pls...
   }
 
   // To check if round should start once all ships have been placed
@@ -120,17 +112,6 @@ class GameController {
     this.#isRoundRunning = false;
   }
 
-  restartRound() {
-    this.#playerOneGameboard = new Gameboard();
-    this.#playerTwoGameboard = new Gameboard();
-    this.#playerOne = new Player();
-    this.#playerTwo = new Player();
-    this.#currentPlayer = this.#playerOne;
-    this.#isPlayerOneTurn = true;
-
-    this.#updateBoard();
-  }
-
   #switchCurrentPlayer() {
     if (this.#isPlayerOneTurn) {
       this.#currentPlayer = this.#playerTwo;
@@ -146,7 +127,7 @@ class GameController {
       console.log('win');
       return this.#playerTwo;
     }
-    
+
     if (this.#playerTwoGameboard.allShipsSunk() === true) {
       console.log('win');
       return this.#playerOne;
@@ -155,8 +136,39 @@ class GameController {
     return null;
   }
 
+  // TODO: implement attack logic
+  #playerAttack(coord) {
+    this.#attackCell(coord);
+    this.#switchCurrentPlayer();
+
+    const winner = this.#getWinner();
+
+    if (winner !== null) {
+      this.#endGame(winner);
+      console.log(`player ${winner} won`);
+    }
+  }
+
   #attackCell(coord) {
-    this.#playerOneGameboard.receiveAttack(coord);
+    if (this.#isRoundRunning === false) return false;
+
+    let currentBoard = null;
+
+    if (this.#isPlayerOneTurn) {
+      currentBoard = this.#playerOneGameboard;
+    } else {
+      currentBoard = this.#playerTwoGameboard;
+    }
+
+    currentBoard.receiveAttack(coord);
+
+    return true;
+  }
+
+  #playerPlaceShip(coord, isHorizontal) {
+    this.#placeShip(coord, isHorizontal);
+
+    this.#runRound();
   }
 
   #placeShip(coord, isHorizontal) {
@@ -218,6 +230,14 @@ class GameController {
     }
 
     return false;
+  }
+
+  #getBundledAPI() {
+    return {
+      startGameHandler: this.startGameHandler.bind(this),
+      doBoardActionHandler: this.doBoardActionHandler.bind(this),
+      restartRoundHandler: this.restartRoundHandler.bind(this),
+    };
   }
 }
 
