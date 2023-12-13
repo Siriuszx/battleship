@@ -1,4 +1,5 @@
 import BoardCell from "./BoardCell";
+import GameboardData from "./GameboardData";
 
 class Gameboard {
     #width = 10;
@@ -42,15 +43,14 @@ class Gameboard {
         return this.#shipList.every(ship => ship.isSunk());
     }
 
-    getBoardData() {
-        const boardCopy = this.#board.slice();
-        const boardData = [];
-
-        boardCopy.forEach(row => {
-            boardData.push(...row);
-        });
-
-        return boardData;
+    getBoardData(userName) {
+        const gameBoardData = new GameboardData(
+            this.#board,
+            userName,
+            this.allShipsSunk()
+        );
+        
+        return gameBoardData;
     }
 
     #canPlace(coordStart, isHorizontal, length) {

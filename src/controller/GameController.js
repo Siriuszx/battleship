@@ -85,10 +85,9 @@ class GameController {
   }
 
   #updateBoard() {
-    const boardOneData = this.#playerOneGameboard.getBoardData();
-    const boardTwoData = this.#playerTwoGameboard.getBoardData();
+    const gameStateData = this.#getBoardState();
 
-    this.#DOMController.updateDOMBoard(boardOneData, boardTwoData);
+    this.#DOMController.updateUI(gameStateData);
   }
 
   #getBoardState() {

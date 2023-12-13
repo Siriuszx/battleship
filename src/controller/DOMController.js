@@ -43,7 +43,14 @@ class DOMController {
     this.#boardInit = true;
   }
 
-  updateDOMBoard(boardOneData, boardTwoData) {
+  updateUI(gameStateData) {
+    this.#updateDOMBoard(
+      gameStateData.playerOneBoardData,
+      gameStateData.playerTwoBoardData
+    );
+  }
+
+  #updateDOMBoard(boardOneData, boardTwoData) {
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
       const nodeBoardOne = this.#boardOne.childNodes[i];
       const dataBoardOne = boardOneData[i];
@@ -57,6 +64,10 @@ class DOMController {
       this.#updateCellMetaData(nodeBoardOne, dataBoardOne);
       this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo);
     }
+  }
+
+  #updateGameStatus(gameStateData) {
+
   }
 
   #toggleHorizontal() {
