@@ -69,11 +69,11 @@ class GameController {
   }
 
   #startGameHandler() {
-    if (this.#isGameRunning === true) return false;
+    if (this.#isGameRunning === true) return;
 
     this.#isGameRunning = true;
 
-    return true;
+    this.#updateGameUI();
   }
 
   #restartRoundHandler() {

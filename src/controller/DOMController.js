@@ -31,8 +31,8 @@ class DOMController {
     this.#updateBoard(gameStateData);
     this.#updateBoardFocus(gameStateData);
 
-    if (currentCellCoord) {
-      this.#highlighBuildPattern(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning, gameStateData.currentUserName);
+    if (currentCellCoord && gameStateData.isGameRunning) {
+      this.#highlighBuildPattern(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.currentUserName);
     }
   }
 
@@ -176,7 +176,7 @@ class DOMController {
 
   // #region Cell Building Path Hinting
 
-  #highlighBuildPattern(coord, currentPlayerFleetSize, isRoundRunning, currentPlayerName) {
+  #highlighBuildPattern(coord, currentPlayerFleetSize, currentPlayerName) {
     const shipSizePattern = this.#getShipSizePattern(currentPlayerFleetSize);
 
     this.#highlightCells(coord, shipSizePattern, currentPlayerName);
