@@ -2,60 +2,49 @@
 import hitStatus from "../entities/HitStatus";
 
 class DOMController {
-  #boardOne = document.getElementById('board-one');
+  #BOARD_WIDTH = 10;
 
-  #boardTwo = document.getElementById('board-two');
+  #BOARD_HEIGHT = 10;
+
+  #CELL_COUNT = 100;
+
+  #boardPlayerOne = document.getElementById('board-one');
+
+  #boardPlayerTwo = document.getElementById('board-two');
 
   #startGameButton = document.getElementById('start-game');
 
-  #switchHorizontalButton = document.getElementById('horizontal-status');
+  #switchAxisButton = document.getElementById('horizontal-status');
 
   #restartGameButton = document.getElementById('restart-game');
 
   #boardInit = false;
 
-  #NUMBER_OF_CELLS = 100;
-
   #isHorizontal = true;
 
-  #BOARD_HEIGHT = 10;
-
-  #BOARD_WIDTH = 10;
-
   constructor(controllerAPI) {
-    this.#initBoard(controllerAPI.doBoardActionHandler, controllerAPI.updateBoardHintsHandler);
+    this.#initBoard(controllerAPI.boardActionHandler, controllerAPI.updateBoardHintsHandler);
     this.#mapHandlers(controllerAPI);
   }
 
-  #mapHandlers(controllerAPI) {
-    this.#startGameButton.addEventListener('click', controllerAPI.startGameHandler);
-    this.#switchHorizontalButton.addEventListener('click', this.#toggleHorizontal.bind(this));
-    this.#restartGameButton.addEventListener('click', controllerAPI.restartRoundHandler);
-  }
+  updateUI(gameStateData, currentCellCoord) {
+    this.#updateBoard(gameStateData);
+    this.#updateBoardFocus(gameStateData);
 
-  #initBoard(doBoardActionHandler, updateBoardHitsHandler) {
-    if (this.#boardInit === true) return;
-
-    for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
-      const newBoardCellOne = this.#createBoardCell(doBoardActionHandler, updateBoardHitsHandler);
-      const newBoardCellTwo = this.#createBoardCell(doBoardActionHandler, updateBoardHitsHandler);
-
-      this.#boardOne.appendChild(newBoardCellOne);
-      this.#boardTwo.appendChild(newBoardCellTwo);
+    if (currentCellCoord) {
+      this.#highlighBuildPattern(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning, gameStateData.currentUserName);
     }
-
-    this.#boardInit = true;
   }
 
-  #updateDOMBoard(gameStateData) {
+  #updateBoard(gameStateData) {
     const gameboardOneData = gameStateData.playerOneGameboardData;
     const gameboardTwoData = gameStateData.playerTwoGameboardData;
 
-    for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
-      const nodeBoardOne = this.#boardOne.childNodes[i];
+    for (let i = 0; i < this.#CELL_COUNT; i += 1) {
+      const nodeBoardOne = this.#boardPlayerOne.childNodes[i];
       const dataBoardOne = gameboardOneData.boardData[i];
 
-      const nodeBoardTwo = this.#boardTwo.childNodes[i];
+      const nodeBoardTwo = this.#boardPlayerTwo.childNodes[i];
       const dataBoardTwo = gameboardTwoData.boardData[i];
 
       this.#updateCellStatus(nodeBoardOne, dataBoardOne, gameStateData.isRoundRunning);
@@ -66,27 +55,93 @@ class DOMController {
     }
   }
 
-  #toggleHorizontal() {
-    this.#isHorizontal = !this.#isHorizontal;
-    this.#switchHorizontalButton.classList.toggle('button-active');
+  #updateBoardFocus(gameStateData) {
+    if (gameStateData.isGameRunning === false) {
+      this.#boardPlayerOne.classList.remove('board-active-build');
+      this.#boardPlayerTwo.classList.remove('board-active-build');
+
+      this.#boardPlayerOne.classList.remove('board-active-attack');
+      this.#boardPlayerTwo.classList.remove('board-active-attack');
+
+      return;
+    }
+
+    if (gameStateData.isRoundRunning === false) {
+      switch (gameStateData.currentUserName) {
+        case 'Player One':
+          this.#boardPlayerOne.classList.add('board-active-build');
+          this.#boardPlayerTwo.classList.remove('board-active-build');
+          break;
+        case 'Player Two':
+          this.#boardPlayerOne.classList.remove('board-active-build');
+          this.#boardPlayerTwo.classList.add('board-active-build');
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (gameStateData.isRoundRunning === true) {
+      this.#boardPlayerOne.classList.remove('board-active-build');
+      this.#boardPlayerTwo.classList.remove('board-active-build');
+
+      switch (gameStateData.currentUserName) {
+        case 'Player One':
+          this.#boardPlayerOne.classList.remove('board-active-attack');
+          this.#boardPlayerTwo.classList.add('board-active-attack');
+          break;
+        case 'Player Two':
+          this.#boardPlayerOne.classList.add('board-active-attack');
+          this.#boardPlayerTwo.classList.remove('board-active-attack');
+          break;
+        default:
+          break;
+      }
+    }
   }
 
-  #createBoardCell(doBoardActionHandler, updateBoardHintsHandler) {
+  // #region Board Initialization
+
+  #mapHandlers(controllerAPI) {
+    this.#startGameButton.addEventListener('click', controllerAPI.startGameHandler);
+    this.#switchAxisButton.addEventListener('click', this.#toggleHorizontal.bind(this));
+    this.#restartGameButton.addEventListener('click', controllerAPI.restartRoundHandler);
+  }
+
+  #initBoard(boardActionHandler, updateBoardHintsHandler) {
+    if (this.#boardInit === true) return;
+
+    for (let i = 0; i < this.#CELL_COUNT; i += 1) {
+      const newBoardCellOne = this.#createCell(boardActionHandler, updateBoardHintsHandler);
+      const newBoardCellTwo = this.#createCell(boardActionHandler, updateBoardHintsHandler);
+
+      this.#boardPlayerOne.appendChild(newBoardCellOne);
+      this.#boardPlayerTwo.appendChild(newBoardCellTwo);
+    }
+
+    this.#boardInit = true;
+  }
+
+  // #endregion
+
+  // #region Cell Creation/StatusMutation
+
+  #createCell(boardActionHandler, updateBoardHintsHandler) {
     const newCell = document.createElement('div');
 
     newCell.classList.add('board-cell');
-    newCell.addEventListener('click', doBoardActionHandler);
+    newCell.addEventListener('click', boardActionHandler);
     newCell.addEventListener('mouseover', updateBoardHintsHandler);
 
     return newCell;
   }
 
-  #updateCellMetaData(cellNode, cellData, playername) {
+  #updateCellMetaData(cellNode, cellData, playerName) {
     const coord = cellData.getCoord();
 
     cellNode.setAttribute('data-coordx', coord.coordX);
     cellNode.setAttribute('data-coordy', coord.coordY);
-    cellNode.setAttribute('data-playername', playername);
+    cellNode.setAttribute('data-playername', playerName);
   }
 
   #updateCellStatus(cellNode, cellData, isRoundRunning) {
@@ -117,24 +172,17 @@ class DOMController {
     if (cellData.isOccupied && isRoundRunning === false) node.style.backgroundColor = '#000';
   }
 
-  updateUI(gameStateData, currentCellCoord) {
-    this.#updateDOMBoard(gameStateData);
-    
-    if(currentCellCoord) {
-      this.#highlighCellsBuilding(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.isRoundRunning, gameStateData.currentUserName);
-    }
-  }
+  // #endregion
 
-  #highlighCellsBuilding(coord, currentPlayerFleetSize, isRoundRunning, currentPlayerName) {
-    if (isRoundRunning === true) return;
+  // #region Cell Building Path Hinting
 
+  #highlighBuildPattern(coord, currentPlayerFleetSize, isRoundRunning, currentPlayerName) {
     const shipSizePattern = this.#getShipSizePattern(currentPlayerFleetSize);
 
     this.#highlightCells(coord, shipSizePattern, currentPlayerName);
   }
 
   #highlightCells(coord, shipSizePattern, currentPlayerName) {
-    console.log("🚀 ~ file: DOMController.js:137 ~ DOMController ~ #highlightCells ~ currentPlayerName:", currentPlayerName)
     const isHorizontal = this.#isHorizontal;
 
     switch (isHorizontal) {
@@ -171,6 +219,13 @@ class DOMController {
       default:
         return 0;
     }
+  }
+
+  // #endregion
+
+  #toggleHorizontal() {
+    this.#isHorizontal = !this.#isHorizontal;
+    this.#switchAxisButton.classList.toggle('button-active');
   }
 
   getIsHorizontal() { return this.#isHorizontal };

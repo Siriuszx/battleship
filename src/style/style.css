@@ -52,6 +52,14 @@ body {
   grid-template-rows: repeat(10, 1fr);
 }
 
+.board-active-build {
+  border: 1px solid lightgreen;
+}
+
+.board-active-attack {
+  border: 1px solid red;
+}
+
 .board-cell {
   border: 1px solid black;
 }

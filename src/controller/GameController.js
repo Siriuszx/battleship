@@ -36,7 +36,7 @@ class GameController {
   }
 
   // Callback to let other layers of program interact with our game controller
-  doBoardActionHandler(event) {
+  #boardActionHandler(event) {
     if (this.#isGameRunning === false) return;
 
     const cellNode = event.target;
@@ -66,7 +66,33 @@ class GameController {
     }
 
     this.#updateGameUI(cellCoord);
-    console.log('ACTION');
+  }
+
+  #startGameHandler() {
+    if (this.#isGameRunning === true) return false;
+
+    this.#isGameRunning = true;
+
+    return true;
+  }
+
+  #restartRoundHandler() {
+    this.#isGameRunning = false;
+    this.#isRoundRunning = false;
+    this.#playerOneGameboard = new Gameboard();
+    this.#playerTwoGameboard = new Gameboard();
+    this.#playerOne = new Player('Player One');
+    this.#playerTwo = new Player('Player Two');
+    this.#currentPlayer = this.#playerOne;
+    this.#isPlayerOneTurn = true;
+
+    this.#updateGameUI();
+  }
+
+  #updateGameUI(currentCellCoord) {
+    const gameStateData = this.#getGameStateData();
+
+    this.#DOMController.updateUI(gameStateData, currentCellCoord);
   }
 
   #updateBoardHintsHandler(event) {
@@ -80,34 +106,6 @@ class GameController {
     const currentCellCoord = new Coordinate(coordX, coordY);
 
     this.#updateGameUI(currentCellCoord);
-  }
-
-  #updateGameUI(currentCellCoord) {
-    const gameStateData = this.#getGameStateData();
-
-    this.#DOMController.updateUI(gameStateData, currentCellCoord);
-  }
-
-  startGameHandler(event) {
-    if (this.#isGameRunning === true) return false;
-    console.log('START');
-    this.#isGameRunning = true;
-
-    return true;
-  }
-
-  restartRoundHandler(event) {
-    this.#isGameRunning = false;
-    this.#isRoundRunning = false;
-    this.#playerOneGameboard = new Gameboard();
-    this.#playerTwoGameboard = new Gameboard();
-    this.#playerOne = new Player('Player One');
-    this.#playerTwo = new Player('Player Two');
-    this.#currentPlayer = this.#playerOne;
-    this.#isPlayerOneTurn = true;
-
-    this.#updateGameUI();
-    console.log('RESTARTED');
   }
 
   #getGameStateData() {
@@ -131,9 +129,8 @@ class GameController {
   }
 
   // To check if round should start once all ships have been placed
-  #runRound() {
+  #startRound() {
     if (this.#playerOne.getShips().length === 5 && this.#playerTwo.getShips().length === 5) {
-      console.log('round is running');
       this.#isRoundRunning = true;
       this.#isPlayerOneTurn = true;
     }
@@ -149,10 +146,8 @@ class GameController {
   #switchCurrentPlayer() {
     if (this.#isPlayerOneTurn) {
       this.#currentPlayer = this.#playerTwo;
-      console.log('PLAYER TWO TURN');
     } else {
       this.#currentPlayer = this.#playerOne;
-      console.log('PLAYER ONE TURN');
     }
 
     this.#isPlayerOneTurn = !this.#isPlayerOneTurn;
@@ -160,19 +155,16 @@ class GameController {
 
   #getWinner() {
     if (this.#playerOneGameboard.allShipsSunk() === true) {
-      console.log('win');
       return this.#playerTwo;
     }
 
     if (this.#playerTwoGameboard.allShipsSunk() === true) {
-      console.log('win');
       return this.#playerOne;
     }
 
     return null;
   }
 
-  // TODO: implement attack logic
   #playerAttack(coord) {
     this.#attackCell(coord);
     this.#switchCurrentPlayer();
@@ -204,7 +196,7 @@ class GameController {
   #playerPlaceShip(coord, isHorizontal) {
     this.#placeShip(coord, isHorizontal);
 
-    this.#runRound();
+    this.#startRound();
   }
 
   #placeShip(coord, isHorizontal) {
@@ -254,11 +246,8 @@ class GameController {
     // Players should take turns after building their entire fleet
     if (isPlaced) {
       this.#currentPlayer.addShip(newShip);
-      console.log('placed');
-      console.log(`current player ships ${this.#currentPlayer.getShips().length}`);
 
       if (this.#currentPlayer.getShips().length === 5) {
-        console.log('switch');
         this.#switchCurrentPlayer();
       }
 
@@ -270,9 +259,9 @@ class GameController {
 
   #getAPIContainer() {
     return {
-      startGameHandler: this.startGameHandler.bind(this),
-      doBoardActionHandler: this.doBoardActionHandler.bind(this),
-      restartRoundHandler: this.restartRoundHandler.bind(this),
+      startGameHandler: this.#startGameHandler.bind(this),
+      boardActionHandler: this.#boardActionHandler.bind(this),
+      restartRoundHandler: this.#restartRoundHandler.bind(this),
       updateBoardHintsHandler: this.#updateBoardHintsHandler.bind(this),
     };
   }
