@@ -7,8 +7,8 @@ class GameBoardDataBuilder {
         this.#gameboardData = new GameboardData();
     }
 
-    setGameboardData(gameBoard) {
-        this.#gameboardData.setGameboardData(gameBoard);
+    setBoardData(gameboard) {
+        this.#gameboardData.setBoardData(gameboard);
         return this;
     }
 
@@ -19,6 +19,7 @@ class GameBoardDataBuilder {
 
     setAllShipsSunk(allShipsSunk) {
         this.#gameboardData.allShipsSunk = allShipsSunk;
+        return this;
     }
 
     #reset() {

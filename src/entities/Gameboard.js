@@ -1,5 +1,5 @@
 import BoardCell from "./BoardCell";
-import GameboardData from "./GameboardData";
+import GameboardDataBuilder from "./DataPointContainers/GameboardDataBuilder";
 
 class Gameboard {
     #width = 10;
@@ -43,14 +43,15 @@ class Gameboard {
         return this.#shipList.every(ship => ship.isSunk());
     }
 
-    getBoardData(userName) {
-        const gameBoardData = new GameboardData(
-            this.#board,
-            userName,
-            this.allShipsSunk()
-        );
+    getGameboardData(playerUserName) {
+        const gameboardDataBuilder = new GameboardDataBuilder();
+
+        const gameboardData = gameboardDataBuilder.setBoardData(this.#board)
+        .setPlayerUserName(playerUserName)
+        .setAllShipsSunk(this.allShipsSunk())
+        .build();
         
-        return gameBoardData;
+        return gameboardData;
     }
 
     #canPlace(coordStart, isHorizontal, length) {

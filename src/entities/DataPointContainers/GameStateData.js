@@ -11,9 +11,9 @@ class GameStateData {
 
     #playerTwoUserName;
 
-    #playerOneBoardData;
+    #playerOneGameboardData;
 
-    #playerTwoBoardData;
+    #playerTwoGameboardData;
 
     get currentUserName() { return this.#currentPlayerUserName; }
 
@@ -39,13 +39,13 @@ class GameStateData {
 
     set playerTwoUserName(playerTwoUserName) { this.#playerTwoUserName = playerTwoUserName; }
 
-    get playerOneBoardData() { return this.#playerOneBoardData; }
+    get playerOneGameboardData() { return this.#playerOneGameboardData; }
 
-    set playerOneBoardData(playerOneBoardData) { this.#playerOneBoardData = playerOneBoardData; }
+    set playerOneGameboardData(playerOneGameboardData) { this.#playerOneGameboardData = playerOneGameboardData; }
 
-    get playerTwoBoardData() { return this.#playerTwoBoardData; }
+    get playerTwoGameboardData() { return this.#playerTwoGameboardData; }
 
-    set playerTwoBoardData(playerTwoBoardData) { this.#playerTwoBoardData=playerTwoBoardData; }
+    set playerTwoGameboardData(playerTwoGameboardData) { this.#playerTwoGameboardData = playerTwoGameboardData; }
 }
 
 export default GameStateData;

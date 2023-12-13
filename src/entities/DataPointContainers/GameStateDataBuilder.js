@@ -37,13 +37,13 @@ class GameStateDataBuilder {
         return this;
     }
 
-    setPlayerOneBoardData(playerOneBoardData) {
-        this.#gameStateData.playerOneBoardData = playerOneBoardData;
+    setPlayerOneGameboardData(playerOneGameboardData) {
+        this.#gameStateData.playerOneGameboardData = playerOneGameboardData;
         return this;
     }
 
-    setPlayerTwoBoardData(playerTwoBoardData) {
-        this.#gameStateData.playerTwoBoardData = playerTwoBoardData;
+    setPlayerTwoGameboardData(playerTwoGameboardData) {
+        this.#gameStateData.playerTwoGameboardData = playerTwoGameboardData;
         return this;
     }
 

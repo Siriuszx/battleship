@@ -45,18 +45,18 @@ class DOMController {
 
   updateUI(gameStateData) {
     this.#updateDOMBoard(
-      gameStateData.playerOneBoardData,
-      gameStateData.playerTwoBoardData
+      gameStateData.playerOneGameboardData,
+      gameStateData.playerTwoGameboardData
     );
   }
 
-  #updateDOMBoard(boardOneData, boardTwoData) {
+  #updateDOMBoard(gameboardOneData, gameboardTwoData) {
     for (let i = 0; i < this.#NUMBER_OF_CELLS; i += 1) {
       const nodeBoardOne = this.#boardOne.childNodes[i];
-      const dataBoardOne = boardOneData[i];
+      const dataBoardOne = gameboardOneData.boardData[i];
 
       const nodeBoardTwo = this.#boardTwo.childNodes[i];
-      const dataBoardTwo = boardTwoData[i];
+      const dataBoardTwo = gameboardTwoData.boardData[i];
 
       this.#updateCellStatus(nodeBoardOne, dataBoardOne);
       this.#updateCellStatus(nodeBoardTwo, dataBoardTwo);

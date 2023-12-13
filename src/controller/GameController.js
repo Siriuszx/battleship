@@ -3,7 +3,7 @@ import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
 import DOMController from "./DOMController";
 import Coordinate from "../entities/Coordinate";
-import GameStateDataBuilder from "../entities/GameStateDataBuilder";
+import GameStateDataBuilder from "../entities/DataPointContainers/GameStateDataBuilder";
 
 class GameController {
   #currentPlayer = null;
@@ -85,23 +85,25 @@ class GameController {
   }
 
   #updateBoard() {
-    const gameStateData = this.#getBoardState();
+    const gameStateData = this.#getGameStateData();
+    console.log("🚀 ~ file: GameController.js:89 ~ GameController ~ #updateBoard ~ gameStateData:", gameStateData)
 
     this.#DOMController.updateUI(gameStateData);
   }
 
-  #getBoardState() {
+  #getGameStateData() {
     const gameStateDataBuilder = new GameStateDataBuilder();
 
-    const gameStateData = gameStateDataBuilder.setCurrentUserName(this.#currentPlayer.getUserName())
-    .setIsGameRunning(this.#isGameRunning)
-    .setIsRoundRunning(this.#isRoundRunning)
-    .setIsPlayerOneTurn(this.#isPlayerOneTurn)
-    .setPlayerOneUserName(this.#playerOne.getUserName())
-    .setPlayerTwoUserName(this.#playerTwo.getUserName())
-    .setPlayerOneBoardData(this.#playerOneGameboard.getBoardData())
-    .setPlayerTwoBoardData(this.#playerOneGameboard.getBoardData())
-    .build();
+    const gameStateData = gameStateDataBuilder
+      .setCurrentUserName(this.#currentPlayer.getUserName())
+      .setIsGameRunning(this.#isGameRunning)
+      .setIsRoundRunning(this.#isRoundRunning)
+      .setIsPlayerOneTurn(this.#isPlayerOneTurn)
+      .setPlayerOneUserName(this.#playerOne.getUserName())
+      .setPlayerTwoUserName(this.#playerTwo.getUserName())
+      .setPlayerOneGameboardData(this.#playerOneGameboard.getGameboardData())
+      .setPlayerTwoGameboardData(this.#playerOneGameboard.getGameboardData())
+      .build();
 
     return gameStateData;
   }

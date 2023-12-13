@@ -1,22 +1,22 @@
 class GameboardData {
-    #gameboardData = null;
+    #boardData = null;
 
     #playerUserName = '';
 
     #allShipsSunk = null;
 
-    setGameboardData(gameboard) {
-        const boardCopy = gameboard.slice();
+    setBoardData(board) {
+        const boardCopy = board.slice();
         const boardData = [];
 
         boardCopy.forEach(row => {
             boardData.push(...row);
         });
 
-        this.#gameboardData = boardData;
+        this.#boardData = boardData;
     }
 
-    get gameboardData() { return this.#gameboardData; }
+    get boardData() { return this.#boardData; }
 
     get playerUserName() { return this.#playerUserName; }
 
