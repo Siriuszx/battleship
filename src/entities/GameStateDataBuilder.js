@@ -58,4 +58,4 @@ class GameStateDataBuilder {
     }
 }
 
-export default GameStateData;
+export default GameStateDataBuilder;

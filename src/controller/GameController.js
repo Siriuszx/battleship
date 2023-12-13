@@ -3,7 +3,7 @@ import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
 import DOMController from "./DOMController";
 import Coordinate from "../entities/Coordinate";
-import GameStateData from "../entities/GameStateData";
+import GameStateDataBuilder from "../entities/GameStateDataBuilder";
 
 class GameController {
   #currentPlayer = null;
@@ -41,7 +41,7 @@ class GameController {
 
     const cellNode = event.target;
 
-    if(cellNode.dataset.username !== this.#currentPlayer.getUserName()) return;
+    if (cellNode.dataset.username !== this.#currentPlayer.getUserName()) return;
 
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
@@ -92,7 +92,19 @@ class GameController {
   }
 
   #getBoardState() {
-    // builder pattern pls...
+    const gameStateDataBuilder = new GameStateDataBuilder();
+
+    const gameStateData = gameStateDataBuilder.setCurrentUserName(this.#currentPlayer.getUserName())
+    .setIsGameRunning(this.#isGameRunning)
+    .setIsRoundRunning(this.#isRoundRunning)
+    .setIsPlayerOneTurn(this.#isPlayerOneTurn)
+    .setPlayerOneUserName(this.#playerOne.getUserName())
+    .setPlayerTwoUserName(this.#playerTwo.getUserName())
+    .setPlayerOneBoardData(this.#playerOneGameboard.getBoardData())
+    .setPlayerTwoBoardData(this.#playerOneGameboard.getBoardData())
+    .build();
+
+    return gameStateData;
   }
 
   // To check if round should start once all ships have been placed
