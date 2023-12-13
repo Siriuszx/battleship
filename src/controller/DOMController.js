@@ -116,6 +116,8 @@ class DOMController {
       default:
         break;
     }
+
+    // if(cellData.isOccupied) node.style.backgroundColor = '#000';
   }
 
   getIsHorizontal() { return this.#isHorizontal };

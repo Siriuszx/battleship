@@ -8,7 +8,7 @@ import GameStateDataBuilder from "../entities/DataPointContainers/GameStateDataB
 class GameController {
   #currentPlayer = null;
 
-  #isGameRunning = true;
+  #isGameRunning = false;
 
   #isRoundRunning = false;
 
@@ -37,24 +37,29 @@ class GameController {
 
   // Callback to let other layers of program interact with our game controller
   doBoardActionHandler(event) {
-    if (this.#isGameRunning === false) return;
+    if (this.#isGameRunning === false){
+      return;
+    }  
 
     const cellNode = event.target;
 
-    if (cellNode.dataset.playername !== this.#currentPlayer.getPlayerName()) return;
-
+    const isCellOwner = cellNode.dataset.playername === this.#currentPlayer.getPlayerName();
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
-
+    
     const cellCoord = new Coordinate(coordX, coordY);
     const isHorizontal = this.#DOMController.getIsHorizontal();
-
+    
     switch (this.#isRoundRunning) {
       case false: {
+        // to let player place ships on HIS OWN board only
+        if (isCellOwner === false) return;
         this.#playerPlaceShip(cellCoord, isHorizontal);
         break;
       }
       case true: {
+        // to let player attack ships on HIS OPPONENT'S board only
+        if (isCellOwner === true) return;
         this.#playerAttack(cellCoord);
         break;
       }
@@ -63,25 +68,29 @@ class GameController {
     }
 
     this.#updateGameUI();
+    console.log('ACTION');
   }
 
   startGameHandler(event) {
     if (this.#isGameRunning === true) return false;
-
+    console.log('START');
     this.#isGameRunning = true;
 
     return true;
   }
 
   restartRoundHandler(event) {
+    this.#isGameRunning = false;
+    this.#isRoundRunning = false;
     this.#playerOneGameboard = new Gameboard();
     this.#playerTwoGameboard = new Gameboard();
-    this.#playerOne = new Player();
-    this.#playerTwo = new Player();
+    this.#playerOne = new Player('Player One');
+    this.#playerTwo = new Player('Player Two');
     this.#currentPlayer = this.#playerOne;
     this.#isPlayerOneTurn = true;
 
     this.#updateGameUI();
+    console.log('RESTARTED');
   }
 
   #updateGameUI() {
@@ -101,7 +110,7 @@ class GameController {
       .setPlayerOneUserName(this.#playerOne.getPlayerName())
       .setPlayerTwoUserName(this.#playerTwo.getPlayerName())
       .setPlayerOneGameboardData(this.#playerOneGameboard.getGameboardData(this.#playerOne.getPlayerName()))
-      .setPlayerTwoGameboardData(this.#playerOneGameboard.getGameboardData(this.#playerTwo.getPlayerName()))
+      .setPlayerTwoGameboardData(this.#playerTwoGameboard.getGameboardData(this.#playerTwo.getPlayerName()))
       .build();
 
     return gameStateData;
@@ -113,7 +122,6 @@ class GameController {
       console.log('round is running');
       this.#isRoundRunning = true;
       this.#isPlayerOneTurn = true;
-      this.#switchCurrentPlayer();
     }
   }
 
@@ -127,8 +135,10 @@ class GameController {
   #switchCurrentPlayer() {
     if (this.#isPlayerOneTurn) {
       this.#currentPlayer = this.#playerTwo;
+      console.log('PLAYER TWO TURN');
     } else {
       this.#currentPlayer = this.#playerOne;
+      console.log('PLAYER ONE TURN');
     }
 
     this.#isPlayerOneTurn = !this.#isPlayerOneTurn;
@@ -167,9 +177,9 @@ class GameController {
     let currentBoard = null;
 
     if (this.#isPlayerOneTurn) {
-      currentBoard = this.#playerOneGameboard;
-    } else {
       currentBoard = this.#playerTwoGameboard;
+    } else {
+      currentBoard = this.#playerOneGameboard;
     }
 
     currentBoard.receiveAttack(coord);
