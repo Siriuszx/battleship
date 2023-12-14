@@ -1,5 +1,5 @@
 import BoardCell from "./BoardCell";
-import GameboardDataBuilder from "./DataPointContainers/GameboardDataBuilder";
+import GameboardDataBuilder from "./dataStateContainers/GameboardDataBuilder";
 
 class Gameboard {
     #width = 10;

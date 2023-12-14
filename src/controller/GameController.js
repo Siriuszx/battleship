@@ -3,7 +3,7 @@ import Ship from "../entities/Ship";
 import Gameboard from "../entities/Gameboard";
 import DOMController from "./DOMController";
 import Coordinate from "../entities/Coordinate";
-import GameStateDataBuilder from "../entities/DataPointContainers/GameStateDataBuilder";
+import GameStateDataBuilder from "../entities/dataStateContainers/GameStateDataBuilder";
 
 class GameController {
   #currentPlayer = null;

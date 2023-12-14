@@ -47,8 +47,14 @@ class DOMController {
       const nodeBoardTwo = this.#boardPlayerTwo.childNodes[i];
       const dataBoardTwo = gameboardTwoData.boardData[i];
 
-      this.#updateCellStatus(nodeBoardOne, dataBoardOne, gameStateData.isRoundRunning);
-      this.#updateCellStatus(nodeBoardTwo, dataBoardTwo, gameStateData.isRoundRunning);
+      // To hide first player's board during building phase
+      if (gameStateData.isPlayerOneTurn === false && gameStateData.isRoundRunning === false) {
+        this.#updateCellStatus(nodeBoardOne, dataBoardOne, !gameStateData.isRoundRunning);
+        this.#updateCellStatus(nodeBoardTwo, dataBoardTwo, gameStateData.isRoundRunning);
+      } else {
+        this.#updateCellStatus(nodeBoardOne, dataBoardOne, gameStateData.isRoundRunning);
+        this.#updateCellStatus(nodeBoardTwo, dataBoardTwo, gameStateData.isRoundRunning);
+      }
 
       this.#updateCellMetaData(nodeBoardOne, dataBoardOne, gameboardOneData.playerUserName);
       this.#updateCellMetaData(nodeBoardTwo, dataBoardTwo, gameboardTwoData.playerUserName);
@@ -126,16 +132,6 @@ class DOMController {
 
   // #region Cell Creation/StatusMutation
 
-  #createCell(boardActionHandler, updateBoardHintsHandler) {
-    const newCell = document.createElement('div');
-
-    newCell.classList.add('board-cell');
-    newCell.addEventListener('click', boardActionHandler);
-    newCell.addEventListener('mouseover', updateBoardHintsHandler);
-
-    return newCell;
-  }
-
   #updateCellMetaData(cellNode, cellData, playerName) {
     const coord = cellData.getCoord();
 
@@ -170,6 +166,16 @@ class DOMController {
     }
 
     if (cellData.isOccupied && isRoundRunning === false) node.style.backgroundColor = '#000';
+  }
+
+  #createCell(boardActionHandler, updateBoardHintsHandler) {
+    const newCell = document.createElement('div');
+
+    newCell.classList.add('board-cell');
+    newCell.addEventListener('click', boardActionHandler);
+    newCell.addEventListener('mouseover', updateBoardHintsHandler);
+
+    return newCell;
   }
 
   // #endregion
