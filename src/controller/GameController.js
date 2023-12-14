@@ -95,14 +95,11 @@ class GameController {
     let rndCoord = this.#getRandomCoord();
     let result = false;
 
-    let equalsLastHitCoord = (rndCoord.coordX === this.#lastComputerHitCoord.coordX) &&
-      (rndCoord.coordY === this.#lastComputerHitCoord.coordY)
+    let isRepeatedCell = this.#isRepeatedCell(rndCoord); 
 
-    while (equalsLastHitCoord) {
+    while (isRepeatedCell) {
       rndCoord = this.#getRandomCoord();
-
-      equalsLastHitCoord = (rndCoord.coordX === this.#lastComputerHitCoord.coordX) &&
-        (rndCoord.coordY === this.#lastComputerHitCoord.coordY)
+      isRepeatedCell = this.#isRepeatedCell(rndCoord);
     }
 
     result = this.#attackHandler(rndCoord);
@@ -137,6 +134,11 @@ class GameController {
     const rndCoord = new Coordinate(rndX, rndY);
 
     return rndCoord;
+  }
+
+  #isRepeatedCell(coord) {
+    return this.#currentPlayer.getHitLog()
+    .some((currentCoord) => (coord.coordX === currentCoord.coordX) && (coord.coordY === currentCoord.coordY));
   }
 
   #startGameHandler() {
@@ -261,6 +263,7 @@ class GameController {
       currentBoard = this.#playerOneGameboard;
     }
 
+    this.#currentPlayer.logHit(coord);
     currentBoard.receiveAttack(coord);
 
     return true;
