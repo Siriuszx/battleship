@@ -30,10 +30,6 @@ class Player {
     this.#playerShips = [];
   }
 
-  setPlayerName(userName) {
-    this.#playerName = userName;
-  }
-
   getPlayerName() {
     return this.#playerName;
   };

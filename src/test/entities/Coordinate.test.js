@@ -1,7 +1,7 @@
 import { expect, test, describe } from "@jest/globals";
 import Coordinate from "../../entities/Coordinate";
 
-describe('coordinate data retrieval', () => {    
+describe('valid coordinate data retrieval', () => {    
     test('get coordinate X', () => {
         const coord1 = new Coordinate(5,3);
         const coord2 = new Coordinate(10,3);
