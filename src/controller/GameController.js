@@ -22,8 +22,6 @@ class GameController {
 
   #playerTwoGameboard = null;
 
-  #isComputerOn = true;
-
   #DOMController = null;
 
   constructor() {
@@ -68,11 +66,16 @@ class GameController {
         break;
     }
 
-    if (this.#isComputerOn === true && this.#isPlayerOneTurn === false) {
+    console.log(this.#DOMController.isComputerEnabled);
+    if (this.#DOMController.isComputerEnabled === true && this.#isPlayerOneTurn === false) {
       this.#computerActionHandler();
     }
 
     this.#updateGameUI(cellCoord);
+  }
+
+  #enableComputerHandler() {
+    this.#restartRoundHandler();
   }
 
   #computerActionHandler() {
@@ -322,6 +325,7 @@ class GameController {
       boardActionHandler: this.#boardActionHandler.bind(this),
       restartRoundHandler: this.#restartRoundHandler.bind(this),
       updateBoardHintsHandler: this.#updateBoardHintsHandler.bind(this),
+      enableComputerHandler: this.#enableComputerHandler.bind(this)
     };
   }
 }

@@ -18,9 +18,13 @@ class DOMController {
 
   #restartGameButton = document.getElementById('restart-game');
 
+  #computerEnabledButton = document.getElementById('enable-computer');
+
   #boardInit = false;
 
   #isHorizontal = true;
+
+  #isComputerEnabled = false;
 
   constructor(controllerAPI) {
     this.#initBoard(controllerAPI.boardActionHandler, controllerAPI.updateBoardHintsHandler);
@@ -112,6 +116,8 @@ class DOMController {
     this.#startGameButton.addEventListener('click', controllerAPI.startGameHandler);
     this.#switchAxisButton.addEventListener('click', this.#toggleHorizontal.bind(this));
     this.#restartGameButton.addEventListener('click', controllerAPI.restartRoundHandler);
+    this.#computerEnabledButton.addEventListener('click', this.#toggleComputer.bind(this));
+    this.#computerEnabledButton.addEventListener('click', controllerAPI.enableComputerHandler);
   }
 
   #initBoard(boardActionHandler, updateBoardHintsHandler) {
@@ -234,7 +240,15 @@ class DOMController {
     this.#switchAxisButton.classList.toggle('button-active');
   }
 
-  getIsHorizontal() { return this.#isHorizontal };
+  #toggleComputer() {
+    this.#isComputerEnabled = !this.#isComputerEnabled;
+    this.#computerEnabledButton.classList.toggle('button-active');
+    console.log(this.#isComputerEnabled);
+  }
+
+  getIsHorizontal() { return this.#isHorizontal; }
+
+  get isComputerEnabled() { return this.#isComputerEnabled; }
 }
 
 export default DOMController;
