@@ -24,6 +24,8 @@ class GameController {
 
   #DOMController = null;
 
+  #lastComputerHitCoord = null;
+
   constructor() {
     this.#DOMController = new DOMController(this.#getAPIContainer());
     this.#playerOneGameboard = new Gameboard();
@@ -31,6 +33,7 @@ class GameController {
     this.#playerOne = new Player('Player One');
     this.#playerTwo = new Player('Player Two');
     this.#currentPlayer = this.#playerOne;
+    this.#lastComputerHitCoord = new Coordinate(-1, -1);
 
     this.#updateGameUI();
   }
@@ -79,9 +82,9 @@ class GameController {
   }
 
   #computerActionHandler() {
-    if(this.#isGameRunning === false) return;
+    if (this.#isGameRunning === false) return;
 
-    if(this.#isRoundRunning === true) {
+    if (this.#isRoundRunning === true) {
       this.#computerAttack();
     } else {
       this.#computerBuildFleet();
@@ -89,12 +92,22 @@ class GameController {
   }
 
   #computerAttack() {
-    let rndCoord = null;
+    let rndCoord = this.#getRandomCoord();
     let result = false;
 
-    rndCoord = this.#getRandomCoord();
+    let equalsLastHitCoord = (rndCoord.coordX === this.#lastComputerHitCoord.coordX) &&
+      (rndCoord.coordY === this.#lastComputerHitCoord.coordY)
+
+    while (equalsLastHitCoord) {
+      rndCoord = this.#getRandomCoord();
+
+      equalsLastHitCoord = (rndCoord.coordX === this.#lastComputerHitCoord.coordX) &&
+        (rndCoord.coordY === this.#lastComputerHitCoord.coordY)
+    }
 
     result = this.#attackHandler(rndCoord);
+
+    this.#lastComputerHitCoord = rndCoord;
 
     console.log(`RND X: ${rndCoord.coordX} RND Y: ${rndCoord.coordY}`);
     console.log(`RESULT: ${result}`);
