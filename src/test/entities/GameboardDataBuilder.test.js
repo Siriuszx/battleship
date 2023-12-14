@@ -1,11 +1,11 @@
 import { test, expect, describe, jest } from "@jest/globals";
-import GameBoardDataBuilder from "../../entities/DataPointContainers/GameboardDataBuilder";
+import GameboardDataBuilder from "../../entities/dataStateContainers/GameboardDataBuilder";
 
 describe('valid data creation', () => {
     test('test data creation/retrieval', () => {
         const mockGetBoard = jest.fn(() => []);
 
-        const builder = new GameBoardDataBuilder();
+        const builder = new GameboardDataBuilder();
         const gameboardData = builder
             .setBoardData(mockGetBoard())
             .setPlayerUserName('Player One')
