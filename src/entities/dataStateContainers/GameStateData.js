@@ -21,6 +21,8 @@ class GameStateData {
 
     #currentPlayerFleetSize;
 
+    #winnerName; 
+
     get currentUserName() { return this.#currentPlayerUserName; }
 
     set currentUserName(currentUserName) { this.#currentPlayerUserName = currentUserName; }
@@ -64,6 +66,10 @@ class GameStateData {
     get currentPlayerFleetSize() { return this.#currentPlayerFleetSize; }
 
     set currentPlayerFleetSize(currentPlayerFleetSize) { this.#currentPlayerFleetSize = currentPlayerFleetSize; }
+
+    get winnerName() { return this.#winnerName; }
+
+    set winnerName(winnerName) { this.#winnerName = winnerName};
 }
 
 export default GameStateData;

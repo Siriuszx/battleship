@@ -20,6 +20,8 @@ class DOMController {
 
   #computerEnabledButton = document.getElementById('enable-computer');
 
+  #gameStateMessage = document.getElementById('status-message');
+
   #boardInit = false;
 
   #isHorizontal = true;
@@ -34,6 +36,7 @@ class DOMController {
   updateUI(gameStateData, currentCellCoord) {
     this.#updateBoard(gameStateData);
     this.#updateBoardFocus(gameStateData);
+    this.#updateStatusMessage(gameStateData);
 
     if (currentCellCoord && gameStateData.isGameRunning) {
       this.#highlighBuildPattern(currentCellCoord, gameStateData.currentPlayerFleetSize, gameStateData.currentUserName);
@@ -107,6 +110,33 @@ class DOMController {
         default:
           break;
       }
+    }
+  }
+
+  #updateStatusMessage(gameStateData) {
+    if(gameStateData.isGameRunning === false) {
+      this.#gameStateMessage.textContent = 'Press Start';
+    }
+
+    if(gameStateData.isRoundRunning === false && gameStateData.isGameRunning === true) {
+      if(gameStateData.isPlayerOneTurn === true) {
+        this.#gameStateMessage.textContent = `${gameStateData.playerOneUserName} Turn`;
+      } else {
+        this.#gameStateMessage.textContent = `${gameStateData.playerTwoUserName} Turn`;
+      }
+    }
+
+    if(gameStateData.isRoundRunning === true) {
+      if(gameStateData.isPlayerOneTurn === true) {
+        this.#gameStateMessage.textContent = `${gameStateData.playerOneUserName} Turn`;
+      } else {
+        this.#gameStateMessage.textContent = `${gameStateData.playerTwoUserName} Turn`;
+      }
+    }
+    
+    if(gameStateData.winnerName) {
+      console.log("🚀 ~ file: DOMController.js:138 ~ DOMController ~ #updateStatusMessage ~ gameStateData.winnerName:", gameStateData.winnerName)
+      this.#gameStateMessage.textContent = `${gameStateData.winnerName} has won!`;
     }
   }
 
@@ -243,7 +273,6 @@ class DOMController {
   #toggleComputer() {
     this.#isComputerEnabled = !this.#isComputerEnabled;
     this.#computerEnabledButton.classList.toggle('button-active');
-    console.log(this.#isComputerEnabled);
   }
 
   getIsHorizontal() { return this.#isHorizontal; }

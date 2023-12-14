@@ -62,6 +62,11 @@ class GameStateDataBuilder {
         return this;
     }
 
+    setWinnerName(winnerName) {
+        this.#gameStateData.winnerName = winnerName;
+        return this;
+    }
+
     reset() {
         this.#gameStateData = new GameStateData();
     }

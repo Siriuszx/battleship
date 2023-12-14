@@ -24,7 +24,7 @@ class GameController {
 
   #DOMController = null;
 
-  #lastComputerHitCoord = null;
+  #lastComputerAttackResult = null;
 
   constructor() {
     this.#DOMController = new DOMController(this.#getAPIContainer());
@@ -33,7 +33,7 @@ class GameController {
     this.#playerOne = new Player('Player One');
     this.#playerTwo = new Player('Player Two');
     this.#currentPlayer = this.#playerOne;
-    this.#lastComputerHitCoord = new Coordinate(-1, -1);
+    this.#lastComputerAttackResult = new Coordinate(-1, -1);
 
     this.#updateGameUI();
   }
@@ -69,7 +69,6 @@ class GameController {
         break;
     }
 
-    console.log(this.#DOMController.isComputerEnabled);
     if (this.#DOMController.isComputerEnabled === true && this.#isPlayerOneTurn === false) {
       this.#computerActionHandler();
     }
@@ -92,38 +91,22 @@ class GameController {
   }
 
   #computerAttack() {
-    let rndCoord = this.#getRandomCoord();
-    let result = false;
+    const newAttackCell = this.#getNewAttackCell();
 
-    let isRepeatedCell = this.#isRepeatedCell(rndCoord); 
+    this.#attackHandler(newAttackCell);
 
-    while (isRepeatedCell) {
-      rndCoord = this.#getRandomCoord();
-      isRepeatedCell = this.#isRepeatedCell(rndCoord);
-    }
-
-    result = this.#attackHandler(rndCoord);
-
-    this.#lastComputerHitCoord = rndCoord;
-
-    console.log(`RND X: ${rndCoord.coordX} RND Y: ${rndCoord.coordY}`);
-    console.log(`RESULT: ${result}`);
+    this.#lastComputerAttackResult = newAttackCell;
   }
 
   #computerBuildFleet() {
     let rndCoord = null;
     let rndIsHorizontal = false;
 
-    let result = false;
-
     while (this.#currentPlayer.fleetSize !== 5) {
       rndCoord = this.#getRandomCoord();
 
       rndIsHorizontal = Boolean(Math.round(Math.random()));
-      result = this.#placeShipHandler(rndCoord, rndIsHorizontal);
-
-      console.log(`RND X: ${rndCoord.coordX} RND Y: ${rndCoord.coordY}`);
-      console.log(`RESULT: ${result}`);
+      this.#placeShipHandler(rndCoord, rndIsHorizontal);
     }
   }
 
@@ -138,7 +121,20 @@ class GameController {
 
   #isRepeatedCell(coord) {
     return this.#currentPlayer.getHitLog()
-    .some((currentCoord) => (coord.coordX === currentCoord.coordX) && (coord.coordY === currentCoord.coordY));
+      .some((currentCoord) => (coord.coordX === currentCoord.coordX) && (coord.coordY === currentCoord.coordY));
+  }
+
+  #getNewAttackCell() {
+    let newAttackCell = this.#getRandomCoord();
+
+    let isRepeatedCell = this.#isRepeatedCell(newAttackCell);
+
+    while (isRepeatedCell) {
+      newAttackCell = this.#getRandomCoord();
+      isRepeatedCell = this.#isRepeatedCell(newAttackCell);
+    }
+
+    return newAttackCell;
   }
 
   #startGameHandler() {
@@ -196,6 +192,7 @@ class GameController {
       .setPlayerOneFleetSize(this.#playerOne.fleetSize)
       .setPlayerTwoFleetSize(this.#playerTwo.fleetSize)
       .setCurrentPlayerFleetSize(this.#currentPlayer.fleetSize)
+      .setWinnerName(this.#getWinner()?.getPlayerName())
       .build();
 
     return gameStateData;
@@ -227,6 +224,8 @@ class GameController {
   }
 
   #getWinner() {
+    if(this.#playerOne.fleetSize !== 5 || this.#playerTwo.fleetSize !== 5) return null;
+
     if (this.#playerOneGameboard.allShipsSunk() === true) {
       return this.#playerTwo;
     }
@@ -246,7 +245,6 @@ class GameController {
 
     if (winner !== null) {
       this.#endGame(winner);
-      console.log(`player ${winner.getPlayerName()} won`);
     }
 
     return attackResult;
@@ -330,7 +328,6 @@ class GameController {
 
       return true;
     }
-    console.log(`isPlaced: ${isPlaced}`);
 
     return false;
   }
