@@ -4,6 +4,5 @@ import GameController from "../../controller/GameController";
 
 
 test('add valid ships', () => {
-   const gameController = new GameController();
 
 });

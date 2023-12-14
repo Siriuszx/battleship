@@ -38,11 +38,7 @@ class Gameboard {
     receiveAttack(coord) {
         return this.#board[coord.coordY - 1][coord.coordX - 1].hit();
     }
-
-    allShipsSunk() {
-        return this.#shipList.every(ship => ship.isSunk());
-    }
-
+    
     getGameboardData(playerUserName) {
         const gameboardDataBuilder = new GameboardDataBuilder();
 
@@ -53,7 +49,11 @@ class Gameboard {
         
         return gameboardData;
     }
-
+    
+    allShipsSunk() {
+        return this.#shipList.every(ship => ship.isSunk());
+    }
+    
     #canPlace(coordStart, isHorizontal, length) {
         switch (isHorizontal) {
             case true: {
