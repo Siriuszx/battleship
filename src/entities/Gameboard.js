@@ -17,7 +17,6 @@ class Gameboard {
 
     placeShip(ship, isHorizontal, length) {
         if (!this.#canPlace(ship.getCoordStart(), isHorizontal, length)) return false;
-
         this.#shipList.push(ship);
 
         if (isHorizontal === true) {
@@ -107,6 +106,10 @@ class Gameboard {
             }
         }
     }
+
+    get width() { return this.#width};
+
+    get height() { return this.#height};
 }
 
 export default Gameboard;

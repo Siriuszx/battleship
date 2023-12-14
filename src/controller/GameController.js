@@ -22,6 +22,8 @@ class GameController {
 
   #playerTwoGameboard = null;
 
+  #isComputerOn = true;
+
   #DOMController = null;
 
   constructor() {
@@ -46,26 +48,79 @@ class GameController {
 
     const coordX = cellNode.dataset.coordx;
     const coordY = cellNode.dataset.coordy;
+
     const cellCoord = new Coordinate(coordX, coordY);
 
     switch (this.#isRoundRunning) {
       case false: {
         // to let player place ships on HIS OWN board only
         if (isCellOwner === false) return;
-        this.#playerPlaceShip(cellCoord, isHorizontal);
+        this.#placeShipHandler(cellCoord, isHorizontal);
         break;
       }
       case true: {
         // to let player attack ships on HIS OPPONENT'S board only
         if (isCellOwner === true) return;
-        this.#playerAttack(cellCoord);
+        this.#attackHandler(cellCoord);
         break;
       }
       default:
         break;
     }
 
+    if (this.#isComputerOn === true && this.#isPlayerOneTurn === false) {
+      this.#computerActionHandler();
+    }
+
     this.#updateGameUI(cellCoord);
+  }
+
+  #computerActionHandler() {
+    if(this.#isGameRunning === false) return;
+
+    if(this.#isRoundRunning === true) {
+      this.#computerAttack();
+    } else {
+      this.#computerBuildFleet();
+    }
+  }
+
+  #computerAttack() {
+    let rndCoord = null;
+    let result = false;
+
+    rndCoord = this.#getRandomCoord();
+
+    result = this.#attackHandler(rndCoord);
+
+    console.log(`RND X: ${rndCoord.coordX} RND Y: ${rndCoord.coordY}`);
+    console.log(`RESULT: ${result}`);
+  }
+
+  #computerBuildFleet() {
+    let rndCoord = null;
+    let rndIsHorizontal = false;
+
+    let result = false;
+
+    while (this.#currentPlayer.fleetSize !== 5) {
+      rndCoord = this.#getRandomCoord();
+
+      rndIsHorizontal = Boolean(Math.round(Math.random()));
+      result = this.#placeShipHandler(rndCoord, rndIsHorizontal);
+
+      console.log(`RND X: ${rndCoord.coordX} RND Y: ${rndCoord.coordY}`);
+      console.log(`RESULT: ${result}`);
+    }
+  }
+
+  #getRandomCoord() {
+    const rndX = Math.floor(Math.random() * this.#playerTwoGameboard.width + 1);
+    const rndY = Math.floor(Math.random() * this.#playerTwoGameboard.height + 1);
+
+    const rndCoord = new Coordinate(rndX, rndY);
+
+    return rndCoord;
   }
 
   #startGameHandler() {
@@ -165,16 +220,18 @@ class GameController {
     return null;
   }
 
-  #playerAttack(coord) {
-    this.#attackCell(coord);
+  #attackHandler(coord) {
+    const attackResult = this.#attackCell(coord);
     this.#switchCurrentPlayer();
 
     const winner = this.#getWinner();
 
     if (winner !== null) {
       this.#endGame(winner);
-      console.log(`player ${winner} won`);
+      console.log(`player ${winner.getPlayerName()} won`);
     }
+
+    return attackResult;
   }
 
   #attackCell(coord) {
@@ -193,15 +250,16 @@ class GameController {
     return true;
   }
 
-  #playerPlaceShip(coord, isHorizontal) {
-    this.#placeShip(coord, isHorizontal);
+  #placeShipHandler(coord, isHorizontal) {
+    const result = this.#placeShip(coord, isHorizontal);
 
     this.#startRound();
+
+    return result;
   }
 
   #placeShip(coord, isHorizontal) {
     if (this.#isRoundRunning) return false;
-
     let currentBoard = null;
     let newShip = null;
     let isPlaced = false;
@@ -240,7 +298,7 @@ class GameController {
         break;
       }
       default:
-        return false;
+        break;
     }
 
     // Players should take turns after building their entire fleet
@@ -253,6 +311,7 @@ class GameController {
 
       return true;
     }
+    console.log(`isPlaced: ${isPlaced}`);
 
     return false;
   }
